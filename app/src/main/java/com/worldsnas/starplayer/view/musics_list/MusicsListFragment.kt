@@ -7,8 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.worldsnas.starplayer.R
+import com.worldsnas.starplayer.databinding.FragmentMusicsListBinding
+import com.worldsnas.starplayer.model.Music
 
 class MusicsListFragment : Fragment() {
+
+    private var _binding: FragmentMusicsListBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,6 +23,22 @@ class MusicsListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = inflater.inflate(R.layout.fragment_musics_list, container, false)
+    ): View {
+        _binding = FragmentMusicsListBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val musics = ArrayList<Music>()
+        musics.add(Music(0, "Test", "Ali", "Single", "Pop"))
+        musics.add(Music(0, "Test", "Ali", "Single", "Pop"))
+        musics.add(Music(0, "Test", "Ali", "Single", "Pop"))
+        musics.add(Music(0, "Test", "Ali", "Single", "Pop"))
+        musics.add(Music(0, "Test", "Ali", "Single", "Pop"))
+        musics.add(Music(0, "Test", "Ali", "Single", "Pop"))
+        binding.recyclerview.adapter = MusicsListAdapter(context!!, musics)
+    }
 }
