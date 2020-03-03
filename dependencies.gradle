@@ -18,7 +18,7 @@ ext {
             googleMaterialVersion = "1.0.0-rc01",
             pagingComponentVersion = "1.0.0-alpha6",
             constraintLayoutVersion = "1.1.3",
-            archComponentVersion = "2.0.0-rc01",
+            archComponentVersion = "2.2.0",
             multidexVersion = "2.0.0",
 
             androidKotlinExtVersion1 = "1.0.0",
