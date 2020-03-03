@@ -157,7 +157,8 @@ ext {
             archComponent = [
                     //architecture comps
                     lifecycleRuntime = "androidx.lifecycle:lifecycle-runtime:$archComponentVersion",
-                    lifecycleExtension = "androidx.lifecycle:lifecycle-extensions:$archComponentVersion"
+                    lifecycleExtension = "androidx.lifecycle:lifecycle-extensions:$archComponentVersion",
+                    lifecycleCompiler = "androidx.lifecycle:lifecycle-compiler:$archComponentVersion"
             ],
 
             androidKts = [
