@@ -14,7 +14,7 @@ ext {
             detektPluginVersion = "1.0.0-RC16",
             arrowVersion = "0.9.0",
 
-            supportLibraryVersion = "1.0.0",
+            supportLibraryVersion = "1.1.0",
             googleMaterialVersion = "1.0.0-rc01",
             pagingComponentVersion = "1.0.0-alpha6",
             constraintLayoutVersion = "2.0.0-beta1",
@@ -74,7 +74,9 @@ ext {
             bottomNavVersion = "2.1.0",
             epoxyVersion = "3.7.0",
             flipperVersion = "0.31.1",
-            chuckerVersion = "3.1.2"
+            chuckerVersion = "3.1.2",
+
+            circularImageView = "3.1.0"
     ]
 }
 ext {
@@ -224,7 +226,8 @@ ext {
                     roundCardView = "com.github.captain-miao:optroundcardview:$roundCardViewVersion",
                     recyclerViewtemDecoration = "com.bignerdranch.android:simple-item-decoration:$recyclerViewItemDecorationVersion",
                     lottie = "com.airbnb.android:lottie:$lottieVersion",
-                    bottomBar = "com.aurelhubert:ahbottomnavigation:$bottomNavVersion"
+                    bottomBar = "com.aurelhubert:ahbottomnavigation:$bottomNavVersion",
+                    circularImageView =  "de.hdodenhof:circleimageview:$circularImageView"
             ],
 
             utils = [
