@@ -41,7 +41,7 @@ dependencies {
 
     // Exoplayer
     implementation 'com.google.android.exoplayer:exoplayer:2.11.3'
-    
+
     implementation constraintLayout
     implementation circularImageView
 }
