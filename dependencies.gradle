@@ -1,7 +1,7 @@
 ext {
     libVersion = [
 
-            databindingCompilerVersion = "3.5.3"
+            databindingCompilerVersion = "3.5.3",
 
             jUnitVersion = "4.13-beta-3",
             assertJVersion = "3.12.2",
