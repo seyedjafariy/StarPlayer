@@ -49,8 +49,5 @@ dependencies {
 
     implementation constraintLayout
     implementation circularImageView
-
-    implementation lifecycleExtension
-    kapt lifecycleCompiler
-    kapt databindingCompiler
+    implementation recyclerView
 }

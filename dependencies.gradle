@@ -1,8 +1,5 @@
 ext {
     libVersion = [
-
-            databindingCompilerVersion = "3.5.3",
-
             jUnitVersion = "4.13-beta-3",
             assertJVersion = "3.12.2",
             supportTestVersion = "1.1.0",
@@ -231,10 +228,6 @@ ext {
                     lottie = "com.airbnb.android:lottie:$lottieVersion",
                     bottomBar = "com.aurelhubert:ahbottomnavigation:$bottomNavVersion",
                     circularImageView =  "de.hdodenhof:circleimageview:$circularImageView"
-            ],
-
-            databinding = [
-              databindingCompiler = "androidx.databinding:databinding-compiler:$databindingCompilerVersion"
             ],
 
             utils = [
