@@ -52,4 +52,5 @@ dependencies {
 
     implementation lifecycleExtension
     kapt lifecycleCompiler
+    kapt databindingCompiler
 }
