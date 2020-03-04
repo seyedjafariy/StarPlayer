@@ -19,5 +19,4 @@ It will involve :
 
 **Please don't use **Domain(Repository)** models in **RecyclerView**
 
-![](https://raw.githubusercontent.com/worldsnas/StarPlayer/a23684a4617780b015c37236b9d7688948982473/pictures/photo_2020-03-04_15-56-01.jpg)
-![](https://raw.githubusercontent.com/worldsnas/StarPlayer/a23684a4617780b015c37236b9d7688948982473/pictures/photo_2020-03-04_15-56-03.jpg)
+![](https://raw.githubusercontent.com/worldsnas/StarPlayer/a23684a4617780b015c37236b9d7688948982473/pictures/photo_2020-03-04_15-56-01.jpg)![](https://raw.githubusercontent.com/worldsnas/StarPlayer/a23684a4617780b015c37236b9d7688948982473/pictures/photo_2020-03-04_15-56-03.jpg)
