@@ -1,4 +1,4 @@
-package com.worldsnas.starplayer.view
+package com.worldsnas.starplayer.view.ui
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

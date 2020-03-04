@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#C6C5C5"
     android:padding="@dimen/fragment_padding"
-    tools:context=".view.PlayerFragment">
+    tools:context=".view.ui.PlayerFragment">
 
     <ImageView
         android:id="@+id/iv_musicImage"
