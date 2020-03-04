@@ -28,10 +28,7 @@ android {
         sourceCompatibility = '1.8'
         targetCompatibility = '1.8'
     }
-    viewBinding {
-        enabled = true
-    }
-    dataBinding.enabled = true
+    viewBinding.enabled = true
 }
 
 dependencies {
