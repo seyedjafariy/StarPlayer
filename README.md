@@ -5,6 +5,10 @@
 
 We will be working on it to learn new things as has been introduced as good things in android world.
 
+List | Playing
+--- | ---
+![](https://raw.githubusercontent.com/worldsnas/StarPlayer/a23684a4617780b015c37236b9d7688948982473/pictures/photo_2020-03-04_15-56-01.jpg) | ![](https://raw.githubusercontent.com/worldsnas/StarPlayer/a23684a4617780b015c37236b9d7688948982473/pictures/photo_2020-03-04_15-56-03.jpg)
+
 It will involve :
 * Architecture: **MVVM**
 * Reactive Programming: **RxJava , Coroutines**
@@ -16,9 +20,6 @@ It will involve :
 * Single Activity using **Navigation Component**
 * We use **Repository** and **UseCase** in model layer
 * In presentation layer we use **LiveData** to bind data to view
-
-
-![](https://raw.githubusercontent.com/worldsnas/StarPlayer/a23684a4617780b015c37236b9d7688948982473/pictures/photo_2020-03-04_15-56-01.jpg)![](https://raw.githubusercontent.com/worldsnas/StarPlayer/a23684a4617780b015c37236b9d7688948982473/pictures/photo_2020-03-04_15-56-03.jpg)
 
 # Contribution
 * Please don't use **Domain(Repository)** models in **RecyclerView**
