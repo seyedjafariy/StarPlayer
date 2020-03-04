@@ -9,28 +9,20 @@ import com.worldsnas.starplayer.databinding.ItemMusicBinding
 import com.worldsnas.starplayer.model.Music
 
 class MusicsListAdapter(private val context: Context, private val musics: ArrayList<Music>) :
-        RecyclerView.Adapter<BaseViewHolder>() {
+    RecyclerView.Adapter<BaseViewHolder<Music>>() {
 
-    inner class MusicListItemViewHolder(private val mBinding: ItemMusicBinding) : BaseViewHolder(mBinding.root), MusicItemViewModel.Listener {
-        private var mMusicViewModel: MusicItemViewModel? = null
-        override fun onBind(position: Int) {
-            mMusicViewModel = MusicItemViewModel(musics[position], this)
-            mBinding.viewModel = mMusicViewModel
-            mBinding.executePendingBindings()
+    class MusicListItemViewHolder(private val mBinding: ItemMusicBinding) :
+        BaseViewHolder<Music>(mBinding.root) {
+
+        override fun onBind(obj: Music) {
+            mBinding.txtMusicTitle.text = obj.title
+            mBinding.txtArtist.text = obj.artist
         }
-
-        override fun onItemClick() {
-
-        }
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MusicListItemViewHolder {
         val musicViewBinding: ItemMusicBinding =
-                ItemMusicBinding.inflate(
-                        LayoutInflater.from(parent.context),
-                        parent, false
-                )
+            ItemMusicBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MusicListItemViewHolder(musicViewBinding)
     }
 
@@ -38,7 +30,7 @@ class MusicsListAdapter(private val context: Context, private val musics: ArrayL
         return musics.size
     }
 
-    override fun onBindViewHolder(holder: BaseViewHolder, position: Int) {
-        holder.onBind(position)
+    override fun onBindViewHolder(holder: BaseViewHolder<Music>, position: Int) {
+        holder.onBind(musics[position])
     }
 }
