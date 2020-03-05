@@ -17,16 +17,5 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
-
-        replaceFragment(R.id.framelayout, MusicsListFragment())
-    }
-
-    fun replaceFragment(@IdRes containerId: Int, fragment: Fragment, tag: String? = null) {
-        val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
-        if (tag != null)
-            ft.replace(containerId, fragment, tag)
-        else
-            ft.replace(containerId, fragment)
-        ft.commit()
     }
 }
