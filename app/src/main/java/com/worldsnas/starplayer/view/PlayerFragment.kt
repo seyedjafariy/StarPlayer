@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.worldsnas.starplayer.MainApplication
 
 import com.worldsnas.starplayer.R
 
@@ -21,4 +22,9 @@ class PlayerFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_player, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        MainApplication.playerFragmentComponent.inject(this)
+    }
 }
