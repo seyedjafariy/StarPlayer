@@ -36,4 +36,9 @@ class MusicsListFragment : Fragment() {
         musics.add(Music(0, "Test", "Ali", "Single", "Pop"))
         binding.recyclerview.adapter = MusicsListAdapter(context!!, musics)
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }
