@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 29
@@ -27,6 +28,9 @@ android {
         sourceCompatibility = '1.8'
         targetCompatibility = '1.8'
     }
+    viewBinding {
+        enabled = true
+    }
 }
 
 dependencies {
@@ -41,7 +45,8 @@ dependencies {
 
     // Exoplayer
     implementation 'com.google.android.exoplayer:exoplayer:2.11.3'
-    
+
     implementation constraintLayout
     implementation circularImageView
+    implementation recyclerView
 }
