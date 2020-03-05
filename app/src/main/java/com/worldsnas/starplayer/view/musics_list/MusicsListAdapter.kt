@@ -11,15 +11,6 @@ import com.worldsnas.starplayer.model.Music
 class MusicsListAdapter(private val musics: ArrayList<Music>) :
     RecyclerView.Adapter<BaseViewHolder<Music>>() {
 
-    class MusicListItemViewHolder(private val mBinding: ItemMusicBinding) :
-        BaseViewHolder<Music>(mBinding.root) {
-
-        override fun onBind(obj: Music) {
-            mBinding.txtMusicTitle.text = obj.title
-            mBinding.txtArtist.text = obj.artist
-        }
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MusicListItemViewHolder {
         val musicViewBinding: ItemMusicBinding =
             ItemMusicBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -32,5 +23,14 @@ class MusicsListAdapter(private val musics: ArrayList<Music>) :
 
     override fun onBindViewHolder(holder: BaseViewHolder<Music>, position: Int) {
         holder.onBind(musics[position])
+    }
+}
+
+class MusicListItemViewHolder(private val mBinding: ItemMusicBinding) :
+    BaseViewHolder<Music>(mBinding.root) {
+
+    override fun onBind(obj: Music) {
+        mBinding.txtMusicTitle.text = obj.title
+        mBinding.txtArtist.text = obj.artist
     }
 }
