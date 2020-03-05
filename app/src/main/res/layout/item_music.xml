@@ -25,7 +25,6 @@
         android:layout_marginStart="8dp"
         android:textColor="@color/textBlack"
         android:textSize="16sp"
-        android:text="@{viewModel.musicTitle}"
         app:layout_constraintStart_toEndOf="@+id/img_music_cover"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -37,7 +36,6 @@
         android:layout_marginTop="4dp"
         android:textColor="@color/textDarkGrey"
         android:textSize="13sp"
-        android:text="@{viewModel.musicArtist}"
         app:layout_constraintStart_toEndOf="@+id/img_music_cover"
         app:layout_constraintTop_toBottomOf="@+id/txt_music_title" />
 
