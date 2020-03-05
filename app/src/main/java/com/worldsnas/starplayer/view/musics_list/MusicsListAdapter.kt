@@ -8,7 +8,7 @@ import com.worldsnas.starplayer.core.BaseViewHolder
 import com.worldsnas.starplayer.databinding.ItemMusicBinding
 import com.worldsnas.starplayer.model.Music
 
-class MusicsListAdapter(private val context: Context, private val musics: ArrayList<Music>) :
+class MusicsListAdapter(private val musics: ArrayList<Music>) :
     RecyclerView.Adapter<BaseViewHolder<Music>>() {
 
     class MusicListItemViewHolder(private val mBinding: ItemMusicBinding) :
