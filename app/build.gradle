@@ -49,4 +49,7 @@ dependencies {
     implementation constraintLayout
     implementation circularImageView
     implementation recyclerView
+
+    implementation navigationFragment
+    implementation navigationUi
 }
