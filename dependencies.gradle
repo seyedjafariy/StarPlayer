@@ -75,7 +75,8 @@ ext {
             flipperVersion = "0.31.1",
             chuckerVersion = "3.1.2",
 
-            circularImageView = "3.1.0"
+            circularImageView = "3.1.0",
+            navigationComponentVersion = "2.3.0-alpha03"
     ]
 }
 ext {
@@ -227,7 +228,9 @@ ext {
                     recyclerViewtemDecoration = "com.bignerdranch.android:simple-item-decoration:$recyclerViewItemDecorationVersion",
                     lottie = "com.airbnb.android:lottie:$lottieVersion",
                     bottomBar = "com.aurelhubert:ahbottomnavigation:$bottomNavVersion",
-                    circularImageView =  "de.hdodenhof:circleimageview:$circularImageView"
+                    circularImageView = "de.hdodenhof:circleimageview:$circularImageView",
+                    navigationFragment = "androidx.navigation:navigation-fragment-ktx:$navigationComponentVersion",
+                    navigationUi = "androidx.navigation:navigation-ui-ktx:$navigationComponentVersion"
             ],
 
             utils = [
