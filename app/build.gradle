@@ -38,10 +38,12 @@ dependencies {
     implementation kotlinStd7
     implementation compat
     implementation coreKts
-
-    // Exoplayer
-    implementation 'com.google.android.exoplayer:exoplayer:2.11.3'
-
+    implementation exoplayer
     implementation constraintLayout
     implementation circularImageView
+
+    implementation coroutines
+    implementation coroutinesAndroid
+    implementation livaDataKts
+    implementation viewModelKts
 }
