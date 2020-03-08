@@ -3,12 +3,12 @@ object AndroidSdk {
     const val min = 21
     const val compile = 29
     const val target = compile
+    const val bulid = "29.0.2"
 }
 
 object Versions{
 
     const val buildToolsVersion = "3.6.1"
-
 
     const val jUnitVersion = "4.13-beta-3"
     const val assertJVersion = "3.12.2"
@@ -84,6 +84,7 @@ object Versions{
     const val epoxyVersion = "3.7.0"
     const val flipperVersion = "0.31.1"
     const val chuckerVersion = "3.1.2"
+    const val exoplayerVersion = "2.11.3"
 
     const val circularImageView = "3.1.0"
     const val navigationComponentVersion = "2.3.0-alpha03"
@@ -96,6 +97,7 @@ object BuildPlugins {
     const val androidApplication = "com.android.application"
     const val kotlinAndroid = "kotlin-android"
     const val kotlinAndroidExtensions = "kotlin-android-extensions"
+    const val kotlinKapt = "kotlin-kapt"
 
 }
 
@@ -161,7 +163,6 @@ object ArrowKotlin{
 object Support{
     //support
     const val compat = "androidx.appcompat:appcompat:${Versions.supportLibraryVersion}"
-    const val supportLegacy = "androidx.legacy:legacy-support-v4:${Versions.supportLibraryVersion}"
     const val androidxCore = "androidx.core:core:${Versions.supportLibraryVersion}"
     const val design = "com.google.android.material:material:${Versions.googleMaterialVersion}"
     const val cardView = "androidx.cardview:cardview:${Versions.supportLibraryVersion}"
@@ -170,6 +171,7 @@ object Support{
     const val recyclerView = "androidx.recyclerview:recyclerview:${Versions.supportLibraryVersion}"
     const val  multiDex = "androidx.multidex:multidex:${Versions.multidexVersion}"
     const val constraintLayout = "androidx.constraintlayout:constraintlayout:${Versions.constraintLayoutVersion}"
+    const val supportLegacy = "androidx.legacy:legacy-support-v4:1.0.0"
     const val viewPager2 = "androidx.viewpager2:viewpager2:1.0.0-alpha04"
 }
 
@@ -252,7 +254,7 @@ object Ui{
     const val navigationUi = "androidx.navigation:navigation-ui-ktx:${Versions.navigationComponentVersion}"
 }
 
-object utils{
+object Utils{
     //Utils
     const val timber = "com.jakewharton.timber:timber:${Versions.timberVersion}"
     const val fresco = "com.facebook.fresco:fresco:${Versions.frescoVersion}"
@@ -271,6 +273,7 @@ object utils{
     const val chuckerNoop = "com.github.ChuckerTeam.Chucker:library-no-op:${Versions.chuckerVersion}"
     const val soLoader = "com.facebook.soloader:soloader:0.5.1}"
     const val stetho = "com.facebook.stetho:stetho:1.5.1"
+    const val exoplayer = "com.google.android.exoplayer:exoplayer:${Versions.exoplayerVersion}"
 }
 
 object Database{
