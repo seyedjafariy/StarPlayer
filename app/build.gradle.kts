@@ -1,4 +1,4 @@
-plugins{
+plugins {
     id(BuildPlugins.androidApplication)
     id(BuildPlugins.kotlinAndroid)
     id(BuildPlugins.kotlinAndroidExtensions)
@@ -17,12 +17,21 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+//        javaCompileOptions {
+//            annotationProcessorOptions {
+//                includeCompileClasspath = true
+//            }
+//        }
     }
 
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 
@@ -39,20 +48,32 @@ android {
 dependencies {
     implementation(Support.supportLegacy)
     testImplementation(Testing.junit)
-    androidTestImplementation (Testing.supportJunitExt)
-    androidTestImplementation (Testing.espressoCore)
+    androidTestImplementation(Testing.supportJunitExt)
+    androidTestImplementation(Testing.espressoCore)
 
-    implementation (Kotlin.kotlinStd7)
-    implementation (Support.compat)
-    implementation (AndroidKts.coreKts)
+    implementation(Kotlin.kotlinStd7)
+    implementation(Support.compat)
+    implementation(AndroidKts.coreKts)
 
 
-    implementation (Utils.exoplayer)
+    implementation(Utils.exoplayer)
 
-    implementation (Support.constraintLayout)
-    implementation (Ui.circularImageView)
-    implementation (Support.recyclerView)
+    implementation(Support.constraintLayout)
+    implementation(Ui.circularImageView)
+    implementation(Support.recyclerView)
 
-    implementation (Ui.navigationFragment)
-    implementation (Ui.navigationUi)
+    implementation(Ui.navigationFragment)
+    implementation(Ui.navigationUi)
+
+    implementation(DaggerLibs.dagger)
+    kapt(DaggerLibs.daggerCompiler)
+
+    implementation(GsonLibs.gson)
+    implementation(GsonLibs.converterGson)
+
+    implementation(Network.retrofit)
+    implementation(Network.okHttp)
+    implementation(Network.okHttpLogging)
+
+    implementation(RxJava.rxJavaRetrofit)
 }
