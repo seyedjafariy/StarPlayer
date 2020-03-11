@@ -16,7 +16,5 @@ interface PlayerFragmentComponent {
 
         fun mainApplicationComponent(appComponent: AppComponent): Builder
 
-        @BindsInstance
-        fun playerFragment(playerFragment: PlayerFragment): Builder
     }
 }
