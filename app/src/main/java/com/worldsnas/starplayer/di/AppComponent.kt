@@ -3,7 +3,9 @@ package com.worldsnas.starplayer.di
 import android.app.Application
 import dagger.BindsInstance
 import dagger.Component
+import javax.inject.Singleton
 
+@Singleton
 @Component
 interface AppComponent {
 
