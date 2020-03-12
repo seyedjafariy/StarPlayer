@@ -4,16 +4,16 @@ import com.worldsnas.starplayer.view.PlayerFragment
 import dagger.Component
 @FragmentScope
 @Component(dependencies = [AppComponent::class])
-interface PlayerFragmentComponent {
+interface PlayerComponent {
 
     fun inject(playerFragment: PlayerFragment)
 
     @Component.Builder
     interface Builder {
 
-        fun build(): PlayerFragmentComponent
+        fun build(): PlayerComponent
 
-        fun mainApplicationComponent(appComponent: AppComponent): Builder
+        fun appComponent(appComponent: AppComponent): Builder
 
     }
 }

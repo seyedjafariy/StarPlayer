@@ -8,15 +8,15 @@ import android.view.ViewGroup
 import com.worldsnas.starplayer.App
 
 import com.worldsnas.starplayer.R
-import com.worldsnas.starplayer.di.DaggerPlayerFragmentComponent
-import com.worldsnas.starplayer.di.PlayerFragmentComponent
+import com.worldsnas.starplayer.di.DaggerPlayerComponent
+import com.worldsnas.starplayer.di.PlayerComponent
 
 /**
  * A simple [Fragment] subclass.
  */
 class PlayerFragment : Fragment() {
 
-    lateinit var playerFragmentComponent: PlayerFragmentComponent
+    lateinit var playerComponent: PlayerComponent
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -28,9 +28,9 @@ class PlayerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        playerFragmentComponent = DaggerPlayerFragmentComponent.builder()
-            .mainApplicationComponent((activity!!.application as App).appComponent).build()
-        playerFragmentComponent.inject(this)
+        playerComponent = DaggerPlayerComponent.builder()
+            .appComponent((activity!!.application as App).appComponent).build()
+        playerComponent.inject(this)
 
     }
 }
