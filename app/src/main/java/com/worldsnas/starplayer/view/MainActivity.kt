@@ -1,4 +1,4 @@
-package com.worldsnas.starplayer
+package com.worldsnas.starplayer.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
