@@ -1,9 +1,7 @@
 package com.worldsnas.starplayer.di.module
 
 import com.squareup.moshi.Moshi
-import com.worldsnas.starplayer.di.scope.ScopeIn
 import com.worldsnas.starplayer.model.api.utils.AppJsonAdapterFactory
-import com.worldsnas.starplayer.view.MainActivity
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
