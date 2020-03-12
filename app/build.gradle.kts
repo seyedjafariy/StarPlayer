@@ -17,12 +17,6 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-//        javaCompileOptions {
-//            annotationProcessorOptions {
-//                includeCompileClasspath = true
-//            }
-//        }
     }
 
     buildTypes {
@@ -68,8 +62,10 @@ dependencies {
     implementation(DaggerLibs.dagger)
     kapt(DaggerLibs.daggerCompiler)
 
-    implementation(GsonLibs.gson)
-    implementation(GsonLibs.converterGson)
+    implementation(MoshiLibs.moshiRetrofit)
+    implementation(MoshiLibs.moshi)
+    implementation(MoshiLibs.kotshi)
+    kapt(MoshiLibs.kotshiCompiler)
 
     implementation(Network.retrofit)
     implementation(Network.okHttp)
