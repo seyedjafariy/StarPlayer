@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#C6C5C5"
+    android:padding="@dimen/fragment_padding"
+    tools:context=".view.PlayerFragment">
+
+    <ImageView
+        android:id="@+id/iv_musicImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="48dp"
+        tools:src="@drawable/rezabahram" />
+
+    <TextView
+        android:id="@+id/tv_musicTitle"
+        style="@style/musicTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_musicImage"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="28dp"
+        tools:text="Atash" />
+
+    <TextView
+        android:id="@+id/tv_musicArtist"
+        style="@style/musicArtist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_musicTitle"
+        android:layout_centerHorizontal="true"
+        tools:text="Reza Bahram" />
+
+    <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+        android:id="@+id/exo_playerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"
+        app:use_controller="false" />
+
+    <com.google.android.exoplayer2.ui.PlayerControlView
+        android:id="@+id/exo_controlView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="32dp"
+        app:controller_layout_id="@layout/custom_exo_playback_control"
+        app:fastforward_increment="10000"
+        app:rewind_increment="10000"
+        app:show_timeout="0" />
+
+</RelativeLayout>
