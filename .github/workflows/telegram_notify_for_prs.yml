@@ -1,7 +1,6 @@
 name: Telegram Notify for New Pull Requests
 
 on:
-  repository_dispatch:
   pull_request:
     types: [opened]
     
@@ -9,10 +8,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: send custom message with args
+#    - name: Dump GitHub context
+#      env:
+#        GITHUB_CONTEXT: ${{ toJson(github) }}
+#      run:
+#        echo "$GITHUB_CONTEXT"
+    - name: Telegram Notify
       uses: appleboy/telegram-action@master
       with:
         to: ${{ secrets.TELEGRAM_GROUP_ID }}
         token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-        args: ✅ New pull request received https://github.com/worldsnas/StarPlayer/pulls
+        message: |
+          ✅ New Pull Request Received
+
+          👉 ${{ github.event.pull_request._links.html.href }}
+
