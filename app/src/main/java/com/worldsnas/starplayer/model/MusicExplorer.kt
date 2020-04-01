@@ -8,7 +8,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import javax.inject.Inject
 
-class MusicExplorer {
+class MusicExplorer : GetAllMusic {
     @Inject
     lateinit var contentResolver: ContentResolver
     private val projection = arrayOf(
@@ -19,7 +19,7 @@ class MusicExplorer {
     )
     private val uri: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
 
-    suspend fun getAllmusic() : ArrayList<Music> {
+   override suspend fun getAllMusic() : ArrayList<Music> {
         return GlobalScope.async(IO) {
             val cursor = contentResolver.query(uri, projection, null, null, null, null)
             val musics: ArrayList<Music> = ArrayList()
@@ -48,7 +48,6 @@ class MusicExplorer {
             }
         return@async musics
         }.await()
-
 }
 }
 
