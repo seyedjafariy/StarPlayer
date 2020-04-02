@@ -3,11 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav"
-    app:startDestination="@id/musicsListFragment">
+    app:startDestination="@id/playerFragment">
 
     <fragment
         android:id="@+id/musicsListFragment"
         android:name="com.worldsnas.starplayer.view.musics_list.MusicsListFragment"
         android:label="fragment_musics_list"
         tools:layout="@layout/fragment_musics_list" />
+    <fragment
+        android:id="@+id/playerFragment"
+        android:name="com.worldsnas.starplayer.view.PlayerFragment"
+        android:label="fragment_player"
+        tools:layout="@layout/fragment_player" />
 </navigation>
