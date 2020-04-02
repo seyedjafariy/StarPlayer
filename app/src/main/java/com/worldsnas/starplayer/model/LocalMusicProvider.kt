@@ -4,13 +4,11 @@ import android.content.ContentResolver
 import android.net.Uri
 import android.provider.MediaStore
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class MusicExplorer @Inject
-constructor(val contentResolver: ContentResolver) : GetAllMusic {
+class LocalMusicProvider @Inject
+constructor(val contentResolver: ContentResolver) : LocalMusicProviderImpl {
 
 
     private val projection = arrayOf(
@@ -21,7 +19,7 @@ constructor(val contentResolver: ContentResolver) : GetAllMusic {
     )
     private val uri: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
 
-    override suspend fun getAllMusic(): ArrayList<Music> {
+    override suspend fun getAllMusic(): List<Music> {
         return withContext(IO) {
             val cursor = contentResolver.query(uri, projection, null, null, null, null)
             val musics: ArrayList<Music> = ArrayList()
