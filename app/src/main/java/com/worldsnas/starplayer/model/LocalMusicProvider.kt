@@ -8,7 +8,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class LocalMusicProvider @Inject
-constructor(val contentResolver: ContentResolver) : LocalMusicProviderImpl {
+constructor(private val contentResolver: ContentResolver) : LocalMusicProviderImpl {
 
 
     private val projection = arrayOf(
