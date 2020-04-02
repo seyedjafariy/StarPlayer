@@ -24,7 +24,7 @@ constructor(private val contentResolver: ContentResolver) : LocalMusicProviderIm
             val cursor = contentResolver.query(uri, projection, null, null, null, null)
             val musics: ArrayList<Music> = ArrayList()
 
-            if (cursor != null) {
+            cursor?.use {
                 val titleColumn =
                     cursor.getColumnIndex(MediaStore.Audio.Genres.Members.TITLE)
                 val idColumn = cursor.getColumnIndex(MediaStore.Audio.Genres.Members._ID)
@@ -44,7 +44,6 @@ constructor(private val contentResolver: ContentResolver) : LocalMusicProviderIm
 
                     musics.add(musicModel)
                 } while (cursor.moveToNext())
-                cursor.close()
             }
             return@withContext musics
         }
