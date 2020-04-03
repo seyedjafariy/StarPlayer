@@ -1,6 +1,7 @@
 package com.worldsnas.starplayer.model
 
 import android.content.ContentResolver
+import android.content.ContentUris
 import android.net.Uri
 import android.provider.MediaStore
 import kotlinx.coroutines.Dispatchers.IO
@@ -34,15 +35,22 @@ constructor(private val contentResolver: ContentResolver) : LocalMusicProvider {
                     cursor.getColumnIndex(MediaStore.Audio.Genres.Members.ALBUM)
 
                 do {
-                    var musicModel = Music(
-                        cursor.getInt(idColumn),
-                        cursor.getString(titleColumn),
-                        cursor.getString(albumColumn),
-                        cursor.getString(artistColumn),
-                        ""
+
+                    val id = cursor.getInt(idColumn)
+                    val title = cursor.getString(titleColumn)
+                    val album =cursor.getString(albumColumn)
+                    val artist = cursor.getString(artistColumn)
+                    val contentUri: Uri =
+                        ContentUris.withAppendedId(uri, id.toLong())
+
+                    val musicModel = Music(
+                        id,title,
+                        album,
+                        artist,
+                        contentUri
                     )
 
-                    musics.add(musicModel)
+                    musics += musicModel
                 } while (cursor.moveToNext())
             }
             return@withContext musics
