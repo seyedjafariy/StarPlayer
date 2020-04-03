@@ -47,7 +47,7 @@ constructor(private val contentResolver: ContentResolver) : LocalMusicProvider {
                         id,title,
                         album,
                         artist,
-                        contentUri
+                        contentUri.toString()
                     )
 
                     musics += musicModel
