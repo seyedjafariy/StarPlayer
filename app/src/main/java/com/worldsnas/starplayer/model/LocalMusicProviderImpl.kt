@@ -4,6 +4,7 @@ import android.content.ContentResolver
 import android.content.ContentUris
 import android.net.Uri
 import android.provider.MediaStore
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -21,41 +22,44 @@ constructor(private val contentResolver: ContentResolver) : LocalMusicProvider {
     private val uri: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
 
     override suspend fun getAllMusic(): List<Music> {
+        return withContext(IO) {
 
-        val cursor = contentResolver.query(uri, projection, null, null, null, null)
-        val musics: ArrayList<Music> = ArrayList()
 
-        cursor?.use {
-            val titleColumn =
-                cursor.getColumnIndex(MediaStore.Audio.Genres.Members.TITLE)
-            val idColumn = cursor.getColumnIndex(MediaStore.Audio.Genres.Members._ID)
-            val artistColumn =
-                cursor.getColumnIndex(MediaStore.Audio.Genres.Members.ARTIST)
-            val albumColumn =
-                cursor.getColumnIndex(MediaStore.Audio.Genres.Members.ALBUM)
+            val cursor = contentResolver.query(uri, projection, null, null, null, null)
+            val musics: ArrayList<Music> = ArrayList()
 
-            do {
+            cursor?.use {
+                val titleColumn =
+                    cursor.getColumnIndex(MediaStore.Audio.Genres.Members.TITLE)
+                val idColumn = cursor.getColumnIndex(MediaStore.Audio.Genres.Members._ID)
+                val artistColumn =
+                    cursor.getColumnIndex(MediaStore.Audio.Genres.Members.ARTIST)
+                val albumColumn =
+                    cursor.getColumnIndex(MediaStore.Audio.Genres.Members.ALBUM)
 
-                val id = cursor.getInt(idColumn)
-                val title = cursor.getString(titleColumn)
-                val album = cursor.getString(albumColumn)
-                val artist = cursor.getString(artistColumn)
-                val contentUri: Uri =
-                    ContentUris.withAppendedId(uri, id.toLong())
+                do {
 
-                val musicModel = Music(
-                    id,
-                    title,
-                    album,
-                    artist,
-                    "genre",
-                    contentUri.path.toString()
-                )
+                    val id = cursor.getInt(idColumn)
+                    val title = cursor.getString(titleColumn)
+                    val album = cursor.getString(albumColumn)
+                    val artist = cursor.getString(artistColumn)
+                    val contentUri: Uri =
+                        ContentUris.withAppendedId(uri, id.toLong())
 
-                musics += musicModel
-            } while (cursor.moveToNext())
+                    val musicModel = Music(
+                        id,
+                        title,
+                        album,
+                        artist,
+                        "genre",
+                        contentUri.path.toString()
+                    )
+
+                    musics += musicModel
+                } while (cursor.moveToNext())
+            }
+            return@withContext musics
         }
-        return musics
     }
 }
 
