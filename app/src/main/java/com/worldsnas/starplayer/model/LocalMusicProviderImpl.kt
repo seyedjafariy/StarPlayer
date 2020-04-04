@@ -43,19 +43,23 @@ constructor(private val contentResolver: ContentResolver) : LocalMusicProvider {
                     val title = cursor.getString(titleColumn)
                     val album = cursor.getString(albumColumn)
                     val artist = cursor.getString(artistColumn)
-                    val contentUri: Uri =
-                        ContentUris.withAppendedId(uri, id.toLong())
 
-                    val musicModel = Music(
-                        id,
-                        title,
-                        album,
-                        artist,
-                        "genre",
-                        contentUri.path.toString()
-                    )
+                    val contentUri =
+                        ContentUris.withAppendedId(uri, id.toLong()).path
+                    if (contentUri.isNullOrEmpty()) {
+                        continue
+                    } else {
+                        val musicModel = Music(
+                            id,
+                            title,
+                            album,
+                            artist,
+                            "genre",
+                            contentUri
+                        )
 
-                    musics += musicModel
+                        musics += musicModel
+                    }
                 } while (cursor.moveToNext())
             }
             return@withContext musics
