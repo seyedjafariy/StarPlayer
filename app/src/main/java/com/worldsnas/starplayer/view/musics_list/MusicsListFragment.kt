@@ -33,12 +33,12 @@ class MusicsListFragment : Fragment() {
         daggerSetup()
 
         val musics = ArrayList<Music>()
-        musics.add(Music(0, "Test", "Ali", "Single", "Pop"))
-        musics.add(Music(0, "Test", "Ali", "Single", "Pop"))
-        musics.add(Music(0, "Test", "Ali", "Single", "Pop"))
-        musics.add(Music(0, "Test", "Ali", "Single", "Pop"))
-        musics.add(Music(0, "Test", "Ali", "Single", "Pop"))
-        musics.add(Music(0, "Test", "Ali", "Single", "Pop"))
+        musics.add(Music(0, "Test", "Ali", "Single", "Pop","somewhere"))
+        musics.add(Music(0, "Test", "Ali", "Single", "Pop","somewhere"))
+        musics.add(Music(0, "Test", "Ali", "Single", "Pop","somewhere"))
+        musics.add(Music(0, "Test", "Ali", "Single", "Pop","somewhere"))
+        musics.add(Music(0, "Test", "Ali", "Single", "Pop","somewhere"))
+        musics.add(Music(0, "Test", "Ali", "Single", "Pop","somewhere"))
         binding.recyclerview.adapter = MusicsListAdapter(musics)
     }
 
