@@ -4,7 +4,7 @@ import com.worldsnas.starplayer.view.musics_list.MusicsListFragment
 import dagger.Component
 
 @FragmentScope
-@Component(dependencies = [AppComponent::class])
+@Component(dependencies = [AppComponent::class], modules = [ViewModelModule::class])
 interface MusicListComponent {
 
     fun inject(musicsListFragment: MusicsListFragment)
