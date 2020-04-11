@@ -29,13 +29,14 @@ constructor(private val contentResolver: ContentResolver) : LocalMusicProvider {
             val musics: ArrayList<Music> = ArrayList()
 
             cursor?.use {
+                cursor.moveToFirst()
                 val titleColumn =
-                    cursor.getColumnIndex(MediaStore.Audio.Genres.Members.TITLE)
-                val idColumn = cursor.getColumnIndex(MediaStore.Audio.Genres.Members._ID)
+                    cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)
+                val idColumn = cursor.getColumnIndex(MediaStore.Audio.Media._ID)
                 val artistColumn =
-                    cursor.getColumnIndex(MediaStore.Audio.Genres.Members.ARTIST)
+                    cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST)
                 val albumColumn =
-                    cursor.getColumnIndex(MediaStore.Audio.Genres.Members.ALBUM)
+                    cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)
 
                 do {
 
