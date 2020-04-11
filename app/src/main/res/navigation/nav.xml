@@ -10,4 +10,9 @@
         android:name="com.worldsnas.starplayer.view.musics_list.MusicsListFragment"
         android:label="fragment_musics_list"
         tools:layout="@layout/fragment_musics_list" />
+    <fragment
+        android:id="@+id/playerFragment"
+        android:name="com.worldsnas.starplayer.view.PlayerFragment"
+        android:label="fragment_player"
+        tools:layout="@layout/fragment_player" />
 </navigation>
