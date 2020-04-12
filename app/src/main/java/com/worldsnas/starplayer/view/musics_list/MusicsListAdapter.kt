@@ -24,6 +24,11 @@ class MusicsListAdapter(private val musics: ArrayList<Music>) :
     override fun onBindViewHolder(holder: BaseViewHolder<Music>, position: Int) {
         holder.onBind(musics[position])
     }
+
+    fun submitList(musicList: List<Music>) {
+        musics += musicList
+        notifyDataSetChanged()
+    }
 }
 
 class MusicListItemViewHolder(private val mBinding: ItemMusicBinding) :
