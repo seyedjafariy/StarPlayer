@@ -14,12 +14,6 @@ object MusicProviderModule {
 
     @JvmStatic
     @Provides
-    fun provideContentResolver(context: Context): ContentResolver {
-        return context.contentResolver
-    }
-
-    @JvmStatic
-    @Provides
     fun provideLocalMusicImpl(application: Application): LocalMusicProvider {
         return LocalMusicProviderImpl(application.contentResolver)
     }
