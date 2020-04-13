@@ -33,13 +33,12 @@ class MusicsListFragment : Fragment() {
     private val READ_EXTERNAL_STORAGE_REQUEST_CODE = 100
 
     private val musicListAdapter by lazy {
-        MusicsListAdapter(musics)
+        MusicsListAdapter()
     }
 
     private var _binding: FragmentMusicsListBinding? = null
     private val binding get() = _binding!!
-    lateinit var musicListComponent: MusicListComponent
-    var musics = ArrayList<Music>()
+    private lateinit var musicListComponent: MusicListComponent
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -66,14 +65,12 @@ class MusicsListFragment : Fragment() {
     private fun liveDataSetup() {
 
         val musicObserver = Observer<List<Music>> {
-            musics = it as ArrayList<Music>
-            Log.d("tag", musics.toString())
+
+            val musics = it
+            Log.d("tag", it.toString())
             musicListAdapter.submitList(musics)
         }
         musicListViewModel.postMusic().observe(viewLifecycleOwner, musicObserver)
-
-
-        Log.d("tag", musics.toString())
 
     }
 
