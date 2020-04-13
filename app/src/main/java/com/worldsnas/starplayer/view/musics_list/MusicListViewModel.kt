@@ -14,9 +14,7 @@ import javax.inject.Inject
 class MusicListViewModel @Inject constructor(private val localMusicProvider: LocalMusicProvider) :
     ViewModel() {
 
-
     private val postMusicList = MutableLiveData<List<Music>>()
-
 
     private fun getAllMusic() {
         viewModelScope.launch {
@@ -30,10 +28,4 @@ class MusicListViewModel @Inject constructor(private val localMusicProvider: Loc
         getAllMusic()
         return postMusicList
     }
-
-    override fun onCleared() {
-        super.onCleared()
-        viewModelScope.cancel()
-    }
-
 }
