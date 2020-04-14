@@ -9,6 +9,8 @@ import javax.inject.Singleton
 @Singleton
 interface AppComponent {
 
+   fun provideApplication () : Application
+
     @Component.Builder
     interface Builder {
 
