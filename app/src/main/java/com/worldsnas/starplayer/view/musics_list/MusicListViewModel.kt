@@ -13,6 +13,9 @@ import javax.inject.Inject
 
 class MusicListViewModel @Inject constructor(private val localMusicProvider: LocalMusicProvider) :
     ViewModel() {
+    init {
+        getAllMusic()
+    }
 
     private val postMusicList = MutableLiveData<List<Music>>()
 
@@ -25,7 +28,6 @@ class MusicListViewModel @Inject constructor(private val localMusicProvider: Loc
     }
 
     fun postMusic(): LiveData<List<Music>> {
-        getAllMusic()
         return postMusicList
     }
 }
