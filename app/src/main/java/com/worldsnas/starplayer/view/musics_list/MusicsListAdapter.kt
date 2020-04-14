@@ -1,32 +1,30 @@
 package com.worldsnas.starplayer.view.musics_list
 
-import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.worldsnas.starplayer.core.BaseViewHolder
 import com.worldsnas.starplayer.databinding.ItemMusicBinding
 import com.worldsnas.starplayer.model.Music
 
-class MusicsListAdapter() :
+class MusicsListAdapter :
     ListAdapter<Music, MusicListItemViewHolder>(DiffCallback) {
 
-    private val musics = ArrayList<Music>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MusicListItemViewHolder {
         val musicViewBinding: ItemMusicBinding =
             ItemMusicBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MusicListItemViewHolder(musicViewBinding)
     }
 
-    override fun getItemCount(): Int {
-        return musics.size
+    override fun onBindViewHolder(holder: MusicListItemViewHolder, position: Int) {
+        val musicItem = getItem(position)
+        holder.onBind(musicItem)
     }
 
-    override fun onBindViewHolder(holder: MusicListItemViewHolder, position: Int) {
-        holder.onBind(musics[position])
+    override fun submitList(list: List<Music>?) {
+        super.submitList(list?.let { ArrayList(it) })
     }
 }
 
