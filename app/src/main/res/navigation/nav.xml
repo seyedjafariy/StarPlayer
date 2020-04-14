@@ -9,7 +9,11 @@
         android:id="@+id/musicsListFragment"
         android:name="com.worldsnas.starplayer.view.musics_list.MusicsListFragment"
         android:label="fragment_musics_list"
-        tools:layout="@layout/fragment_musics_list" />
+        tools:layout="@layout/fragment_musics_list" >
+        <action
+            android:id="@+id/action_musicsListFragment_to_playerFragment"
+            app:destination="@id/playerFragment" />
+    </fragment>
     <fragment
         android:id="@+id/playerFragment"
         android:name="com.worldsnas.starplayer.view.PlayerFragment"
