@@ -22,10 +22,6 @@ class MusicsListAdapter :
         val musicItem = getItem(position)
         holder.onBind(musicItem)
     }
-
-    override fun submitList(list: List<Music>?) {
-        super.submitList(list?.let { ArrayList(it) })
-    }
 }
 
 class MusicListItemViewHolder(private val mBinding: ItemMusicBinding) :
@@ -39,10 +35,10 @@ class MusicListItemViewHolder(private val mBinding: ItemMusicBinding) :
 
 object DiffCallback : DiffUtil.ItemCallback<Music>() {
     override fun areItemsTheSame(oldItem: Music, newItem: Music): Boolean {
-        return oldItem == newItem
+        return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(oldItem: Music, newItem: Music): Boolean {
-        return oldItem.id == newItem.id
+        return oldItem == newItem
     }
 }
