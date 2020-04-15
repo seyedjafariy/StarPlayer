@@ -2,7 +2,6 @@ package com.worldsnas.starplayer.view
 
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,16 +14,15 @@ import com.worldsnas.starplayer.App
 import com.worldsnas.starplayer.databinding.FragmentPlayerBinding
 import com.worldsnas.starplayer.di.DaggerPlayerComponent
 import com.worldsnas.starplayer.di.PlayerComponent
-import java.io.File
 
 /**
  * A simple [Fragment] subclass.
  */
 class PlayerFragment : Fragment() {
 
-    lateinit var playerComponent: PlayerComponent
-    var exoPlayer: SimpleExoPlayer? = null
-    var viewBinding: FragmentPlayerBinding? = null
+    private lateinit var playerComponent: PlayerComponent
+    private var exoPlayer: SimpleExoPlayer? = null
+    private var viewBinding: FragmentPlayerBinding? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,23 +31,21 @@ class PlayerFragment : Fragment() {
         // Inflate the layout for this fragment
         viewBinding = FragmentPlayerBinding.inflate(inflater, container, false)
         initializeExoplayer()
+        setMusicArguments()
         return viewBinding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        playerComponent = DaggerPlayerComponent.builder()
-            .appComponent((activity!!.application as App).appComponent).build()
-        playerComponent.inject(this)
+        daggerSetup()
     }
 
     private fun initializeExoplayer() {
         exoPlayer = SimpleExoPlayer.Builder(context!!).build()
         viewBinding?.exoControlView?.player = exoPlayer
 
-        val filePath = Environment.getExternalStorageDirectory().path + "/Download/Temp/Test.mp3"
-        val mediaSource = buildMediaSource(Uri.fromFile(File(filePath)))
+        val filePath = "content://media/" + arguments?.getString("address")
+        val mediaSource = buildMediaSource(Uri.parse(filePath))
         exoPlayer?.prepare(mediaSource, false, false)
     }
 
@@ -68,5 +64,17 @@ class PlayerFragment : Fragment() {
         super.onDestroyView()
         releaseExoPlayer()
         viewBinding = null
+    }
+
+    private fun setMusicArguments() {
+        viewBinding?.tvMusicTitle?.text = arguments?.getString("title")
+        viewBinding?.tvMusicArtist?.text = arguments?.getString("artist")
+
+    }
+
+    private fun daggerSetup() {
+        playerComponent = DaggerPlayerComponent.builder()
+            .appComponent((activity!!.application as App).appComponent).build()
+        playerComponent.inject(this)
     }
 }
