@@ -15,7 +15,7 @@ import com.worldsnas.starplayer.ConstValues
 import com.worldsnas.starplayer.databinding.FragmentPlayerBinding
 import com.worldsnas.starplayer.di.DaggerPlayerComponent
 import com.worldsnas.starplayer.di.PlayerComponent
-import com.worldsnas.starplayer.model.Music
+import com.worldsnas.starplayer.model.LocalMusic
 
 /**
  * Fragment to Play Musics
@@ -25,9 +25,7 @@ class PlayerFragment : Fragment() {
     private lateinit var playerComponent: PlayerComponent
     private var exoPlayer: SimpleExoPlayer? = null
     private var viewBinding: FragmentPlayerBinding? = null
-    private val music by lazy {
-        arguments?.getParcelable<Music>(ConstValues.musicInfoBundleKey)
-    }
+    private lateinit var music: LocalMusic
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,8 +33,9 @@ class PlayerFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         viewBinding = FragmentPlayerBinding.inflate(inflater, container, false)
-        initializeExoplayer()
         setMusicArguments()
+        initializeExoplayer()
+
         return viewBinding?.root
     }
 
@@ -49,7 +48,7 @@ class PlayerFragment : Fragment() {
         exoPlayer = SimpleExoPlayer.Builder(context!!).build()
         viewBinding?.exoControlView?.player = exoPlayer
 
-        val filePath = ConstValues.preAddress + music?.address
+        val filePath = ConstValues.PRE_ADDRESS_VOLUME + music.address
         val mediaSource = buildMediaSource(Uri.parse(filePath))
         exoPlayer?.prepare(mediaSource, false, false)
     }
@@ -72,9 +71,11 @@ class PlayerFragment : Fragment() {
     }
 
     private fun setMusicArguments() {
-        viewBinding?.tvMusicTitle?.text = music?.title
-        viewBinding?.tvMusicArtist?.text = music?.artist
+        music = arguments?.getParcelable(ConstValues.BUNDLE_KEY_MUSIC_INFO)
+            ?: throw Throwable("Did not Receive Anything ")
 
+        viewBinding?.tvMusicTitle?.text = music.title
+        viewBinding?.tvMusicArtist?.text = music.artist
     }
 
     private fun daggerSetup() {
