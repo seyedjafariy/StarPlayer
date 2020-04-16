@@ -13,7 +13,9 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.findNavController
 import com.worldsnas.starplayer.App
+import com.worldsnas.starplayer.R
 import com.worldsnas.starplayer.databinding.FragmentMusicsListBinding
 import com.worldsnas.starplayer.di.DaggerMusicListComponent
 import com.worldsnas.starplayer.di.MusicListComponent
@@ -54,7 +56,7 @@ class MusicsListFragment : Fragment() {
         storagePermissionCheck()
 
         binding.recyclerview.adapter = musicListAdapter
-
+        provideMusic()
     }
 
     override fun onDestroyView() {
@@ -126,6 +128,22 @@ class MusicsListFragment : Fragment() {
             }
             else -> return
         }
+
+    }
+
+    private fun provideMusic() {
+
+        musicListAdapter.onItemClick = {
+            val bundle = Bundle()
+
+            bundle.putParcelable("musicInfo", it)
+
+            _binding!!.root.findNavController()
+                .navigate(R.id.action_musicsListFragment_to_playerFragment, bundle)
+
+//            Toast.makeText(context, "$it", Toast.LENGTH_SHORT).show()
+        }
+
 
     }
 
