@@ -15,6 +15,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.worldsnas.starplayer.App
+import com.worldsnas.starplayer.ConstValues
 import com.worldsnas.starplayer.R
 import com.worldsnas.starplayer.databinding.FragmentMusicsListBinding
 import com.worldsnas.starplayer.di.DaggerMusicListComponent
@@ -136,7 +137,7 @@ class MusicsListFragment : Fragment() {
         musicListAdapter.onItemClick = {
             val bundle = Bundle()
 
-            bundle.putParcelable("musicInfo", it)
+            bundle.putParcelable(ConstValues.musicInfoBundleKey, it)
 
             _binding!!.root.findNavController()
                 .navigate(R.id.action_musicsListFragment_to_playerFragment, bundle)
