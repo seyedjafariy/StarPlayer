@@ -6,16 +6,16 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.worldsnas.starplayer.core.BaseViewHolder
 import com.worldsnas.starplayer.databinding.ItemMusicBinding
+import com.worldsnas.starplayer.model.LocalMusic
 import com.worldsnas.starplayer.model.Music
 
-class MusicsListAdapter :
+class MusicsListAdapter(var onItemClick: (LocalMusic) -> Unit) :
     ListAdapter<Music, MusicListItemViewHolder>(DiffCallback) {
-    var onItemClick: ((Music) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MusicListItemViewHolder {
         val musicViewBinding: ItemMusicBinding =
             ItemMusicBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return MusicListItemViewHolder(musicViewBinding,onItemClick)
+        return MusicListItemViewHolder(musicViewBinding, onItemClick)
     }
 
     override fun onBindViewHolder(holder: MusicListItemViewHolder, position: Int) {
@@ -24,7 +24,10 @@ class MusicsListAdapter :
     }
 }
 
-class MusicListItemViewHolder(private val mBinding: ItemMusicBinding,val onItemClick: ((Music) -> Unit)?) :
+class MusicListItemViewHolder(
+    private val mBinding: ItemMusicBinding,
+    private val onItemClick: ((LocalMusic) -> Unit)
+) :
     BaseViewHolder<Music>(mBinding.root) {
 
     override fun onBind(obj: Music) {
@@ -34,9 +37,18 @@ class MusicListItemViewHolder(private val mBinding: ItemMusicBinding,val onItemC
         sendToPlay(obj)
     }
 
-   private fun sendToPlay(obj: Music) {
+    private fun sendToPlay(obj: Music) {
         mBinding.root.setOnClickListener {
-            onItemClick?.invoke(obj)
+            val localMusic = LocalMusic(
+                obj.id,
+                obj.title,
+                obj.artist,
+                obj.album,
+                obj.genre,
+                obj.address
+            )
+
+            onItemClick(localMusic)
         }
     }
 }
