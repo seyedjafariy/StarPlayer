@@ -9,7 +9,7 @@ import com.worldsnas.starplayer.databinding.ItemMusicBinding
 import com.worldsnas.starplayer.model.LocalMusic
 import com.worldsnas.starplayer.model.Music
 
-class MusicsListAdapter(var onItemClick: (LocalMusic) -> Unit) :
+class MusicsListAdapter(private var onItemClick: (LocalMusic) -> Unit) :
     ListAdapter<Music, MusicListItemViewHolder>(DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MusicListItemViewHolder {
