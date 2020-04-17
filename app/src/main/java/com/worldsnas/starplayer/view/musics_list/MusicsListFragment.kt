@@ -10,13 +10,18 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.worldsnas.starplayer.App
+import com.worldsnas.starplayer.ConstValues
+import com.worldsnas.starplayer.R
 import com.worldsnas.starplayer.databinding.FragmentMusicsListBinding
 import com.worldsnas.starplayer.di.DaggerMusicListComponent
 import com.worldsnas.starplayer.di.MusicListComponent
+import com.worldsnas.starplayer.model.LocalMusic
 import com.worldsnas.starplayer.model.Music
 import com.worldsnas.starplayer.view.ViewModelFactory
 import javax.inject.Inject
@@ -30,11 +35,7 @@ class MusicsListFragment : Fragment() {
     private val musicListViewModel by
     viewModels<MusicListViewModel> { viewModelFactory }
 
-    private val READ_EXTERNAL_STORAGE_REQUEST_CODE = 100
-
-    private val musicListAdapter by lazy {
-        MusicsListAdapter()
-    }
+    private val musicListAdapter = MusicsListAdapter { item -> musicListener(item) }
 
     private var _binding: FragmentMusicsListBinding? = null
     private val binding get() = _binding!!
@@ -54,7 +55,6 @@ class MusicsListFragment : Fragment() {
         storagePermissionCheck()
 
         binding.recyclerview.adapter = musicListAdapter
-
     }
 
     override fun onDestroyView() {
@@ -71,7 +71,6 @@ class MusicsListFragment : Fragment() {
             musicListAdapter.submitList(musics)
         }
         musicListViewModel.postMusic().observe(viewLifecycleOwner, musicObserver)
-
     }
 
     private fun daggerSetup() {
@@ -102,7 +101,7 @@ class MusicsListFragment : Fragment() {
         ActivityCompat.requestPermissions(
             activity!!,
             arrayOf(READ_EXTERNAL_STORAGE),
-            READ_EXTERNAL_STORAGE_REQUEST_CODE
+            ConstValues.READ_EXTERNAL_STORAGE_REQUEST_CODE
         )
     }
 
@@ -114,7 +113,7 @@ class MusicsListFragment : Fragment() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         when (requestCode) {
-            READ_EXTERNAL_STORAGE_REQUEST_CODE -> {
+            ConstValues.READ_EXTERNAL_STORAGE_REQUEST_CODE -> {
                 if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     liveDataSetup()
 
@@ -126,7 +125,13 @@ class MusicsListFragment : Fragment() {
             }
             else -> return
         }
+    }
 
+    private fun musicListener(localMusic: LocalMusic) {
+        val bundle = bundleOf(ConstValues.BUNDLE_KEY_MUSIC_INFO to localMusic)
+
+        findNavController()
+            .navigate(R.id.action_musicsListFragment_to_playerFragment, bundle)
     }
 
 }
