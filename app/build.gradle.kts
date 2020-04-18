@@ -1,4 +1,3 @@
-import AndroidKts.fragmentKts
 
 plugins {
     id(BuildPlugins.androidApplication)
@@ -64,4 +63,7 @@ dependencies {
 
     implementation(Ui.navigationFragment)
     implementation(Ui.navigationUi)
+
+    implementation(Network.retrofit)
+    implementation(MoshiLibs.moshiRetrofit)
 }
