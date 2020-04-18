@@ -19,8 +19,8 @@ import com.worldsnas.starplayer.App
 import com.worldsnas.starplayer.ConstValues
 import com.worldsnas.starplayer.R
 import com.worldsnas.starplayer.databinding.FragmentMusicsListBinding
-import com.worldsnas.starplayer.di.DaggerMusicListComponent
-import com.worldsnas.starplayer.di.MusicListComponent
+import com.worldsnas.starplayer.di.components.DaggerMusicListComponent
+import com.worldsnas.starplayer.di.components.MusicListComponent
 import com.worldsnas.starplayer.model.LocalMusic
 import com.worldsnas.starplayer.model.Music
 import com.worldsnas.starplayer.view.ViewModelFactory

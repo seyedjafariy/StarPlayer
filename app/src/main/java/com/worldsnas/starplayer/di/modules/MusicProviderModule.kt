@@ -1,9 +1,6 @@
-package com.worldsnas.starplayer.di
+package com.worldsnas.starplayer.di.modules
 
 import android.app.Application
-import android.content.ContentResolver
-import android.content.Context
-import com.worldsnas.starplayer.App
 import com.worldsnas.starplayer.model.LocalMusicProvider
 import com.worldsnas.starplayer.model.LocalMusicProviderImpl
 import dagger.Module

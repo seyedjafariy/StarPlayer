@@ -13,8 +13,8 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.worldsnas.starplayer.App
 import com.worldsnas.starplayer.ConstValues
 import com.worldsnas.starplayer.databinding.FragmentPlayerBinding
-import com.worldsnas.starplayer.di.DaggerPlayerComponent
-import com.worldsnas.starplayer.di.PlayerComponent
+import com.worldsnas.starplayer.di.components.DaggerPlayerComponent
+import com.worldsnas.starplayer.di.components.PlayerComponent
 import com.worldsnas.starplayer.model.LocalMusic
 
 /**

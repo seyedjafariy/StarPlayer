@@ -1,4 +1,4 @@
-package com.worldsnas.starplayer.di
+package com.worldsnas.starplayer.di.components
 
 import android.app.Application
 import dagger.BindsInstance

@@ -1,9 +1,9 @@
-package com.worldsnas.starplayer.di
+package com.worldsnas.starplayer.di.modules
 
 
-import android.content.ContentResolver
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.worldsnas.starplayer.di.ViewModelKey
 import com.worldsnas.starplayer.view.ViewModelFactory
 import com.worldsnas.starplayer.view.musics_list.MusicListViewModel
 import dagger.Binds
