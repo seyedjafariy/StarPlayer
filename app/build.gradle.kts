@@ -1,4 +1,3 @@
-
 plugins {
     id(BuildPlugins.androidApplication)
     id(BuildPlugins.kotlinAndroid)
@@ -66,4 +65,5 @@ dependencies {
 
     implementation(Network.retrofit)
     implementation(MoshiLibs.moshiRetrofit)
+    implementation(Network.okHttp)
 }
