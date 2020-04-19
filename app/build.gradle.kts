@@ -63,7 +63,11 @@ dependencies {
     implementation(Ui.navigationFragment)
     implementation(Ui.navigationUi)
 
-    implementation(Network.retrofit)
+    implementation(MoshiLibs.moshiKotlin)
     implementation(MoshiLibs.moshiRetrofit)
+
+
+    implementation(Network.okHttpLogging)
+    implementation(Network.retrofit)
     implementation(Network.okHttp)
 }
