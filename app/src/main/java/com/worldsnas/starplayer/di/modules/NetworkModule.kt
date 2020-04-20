@@ -16,7 +16,6 @@ object NetworkModule {
 
     @Provides
     @JvmStatic
-    @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
 
         return Retrofit.Builder().baseUrl(ConstValues.BASE_URL)
