@@ -1,6 +1,6 @@
-package com.worldsnas.starplayer.model
+package com.worldsnas.starplayer.api
 
-data class MusicBrowsingSpecs(
+data class MusicResponse(
     var id: Long,
     var page: Long,
     var musicLink: String,
