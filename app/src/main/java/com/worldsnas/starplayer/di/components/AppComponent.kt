@@ -1,15 +1,16 @@
 package com.worldsnas.starplayer.di.components
 
 import android.app.Application
+import com.worldsnas.starplayer.di.modules.NetworkModule
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
 
-@Component
+@Component(modules = [NetworkModule::class])
 @Singleton
 interface AppComponent {
 
-   fun provideApplication () : Application
+    fun provideApplication(): Application
 
     @Component.Builder
     interface Builder {
