@@ -12,5 +12,5 @@ object RetrofitClient {
         .client(OkHttpClient().newBuilder().build())
         .build()
 
-    val apiInterface : ApiInterface = retrofit().create(ApiInterface::class.java)
+    val WEB_SERVICE_API : WebServiceApi = retrofit().create(WebServiceApi::class.java)
 }
