@@ -6,11 +6,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.worldsnas.starplayer.core.BaseViewHolder
 import com.worldsnas.starplayer.databinding.ItemMusicBinding
-import com.worldsnas.starplayer.model.LocalMusic
 import com.worldsnas.starplayer.model.Music
+import com.worldsnas.starplayer.model.LocalMusic
 
-class MusicsListAdapter(private var onItemClick: (LocalMusic) -> Unit) :
-    ListAdapter<Music, MusicListItemViewHolder>(DiffCallback) {
+class MusicsListAdapter(private var onItemClick: (Music) -> Unit) :
+    ListAdapter<LocalMusic, MusicListItemViewHolder>(DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MusicListItemViewHolder {
         val musicViewBinding: ItemMusicBinding =
@@ -26,20 +26,20 @@ class MusicsListAdapter(private var onItemClick: (LocalMusic) -> Unit) :
 
 class MusicListItemViewHolder(
     private val mBinding: ItemMusicBinding,
-    private val onItemClick: ((LocalMusic) -> Unit)
+    private val onItemClick: ((Music) -> Unit)
 ) :
-    BaseViewHolder<Music>(mBinding.root) {
+    BaseViewHolder<LocalMusic>(mBinding.root) {
 
-    override fun onBind(obj: Music) {
+    override fun onBind(obj: LocalMusic) {
         mBinding.txtMusicTitle.text = obj.title
         mBinding.txtArtist.text = obj.artist
 
         sendToPlay(obj)
     }
 
-    private fun sendToPlay(obj: Music) {
+    private fun sendToPlay(obj: LocalMusic) {
         mBinding.root.setOnClickListener {
-            val localMusic = LocalMusic(
+            val localMusic = Music(
                 obj.id,
                 obj.title,
                 obj.artist,
@@ -53,12 +53,12 @@ class MusicListItemViewHolder(
     }
 }
 
-object DiffCallback : DiffUtil.ItemCallback<Music>() {
-    override fun areItemsTheSame(oldItem: Music, newItem: Music): Boolean {
+object DiffCallback : DiffUtil.ItemCallback<LocalMusic>() {
+    override fun areItemsTheSame(oldItem: LocalMusic, newItem: LocalMusic): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: Music, newItem: Music): Boolean {
+    override fun areContentsTheSame(oldItem: LocalMusic, newItem: LocalMusic): Boolean {
         return oldItem == newItem
     }
 }

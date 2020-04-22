@@ -15,7 +15,7 @@ import com.worldsnas.starplayer.ConstValues
 import com.worldsnas.starplayer.databinding.FragmentPlayerBinding
 import com.worldsnas.starplayer.di.components.DaggerPlayerComponent
 import com.worldsnas.starplayer.di.components.PlayerComponent
-import com.worldsnas.starplayer.model.LocalMusic
+import com.worldsnas.starplayer.model.Music
 
 /**
  * Fragment to Play Musics
@@ -25,7 +25,7 @@ class PlayerFragment : Fragment() {
     private lateinit var playerComponent: PlayerComponent
     private var exoPlayer: SimpleExoPlayer? = null
     private var viewBinding: FragmentPlayerBinding? = null
-    private lateinit var music: LocalMusic
+    private lateinit var music: Music
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
