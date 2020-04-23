@@ -41,7 +41,6 @@ object NetworkModule {
 
     @Provides
     @JvmStatic
-    @Singleton
     fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
         return HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
