@@ -1,23 +1,29 @@
 package com.worldsnas.starplayer.model
 
-import android.util.Log
-import com.worldsnas.starplayer.api.MusicResponse
 import com.worldsnas.starplayer.api.WebServiceApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class RepositoryImpl @Inject constructor(
+class MusicRepositoryImpl @Inject constructor(
     private val localMusicProvider: LocalMusicProvider,
     private val webServiceApi: WebServiceApi
-) : Repository {
+) : MusicRepository {
 
-    override suspend fun getApiData(): List<MusicResponse> {
-
+    override suspend fun getApiData(): List<Music> {
+        val localMusicList: MutableList<Music> = ArrayList<Music>().toMutableList()
         return withContext(Dispatchers.IO) {
             val musicList = webServiceApi.getMusics()
-            Log.d("myTag", musicList.toString())
-            return@withContext musicList
+
+            if (musicList.isSuccessful && musicList.body()?.isNotEmpty()!!) {
+                musicList.body()?.forEach {
+
+                    val music =
+                        Music(it.id.toInt(), it.name, it.artist, "album", "genre", it.musicLink)
+                    localMusicList += music
+                }
+            }
+            return@withContext localMusicList
         }
     }
 
