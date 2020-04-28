@@ -25,7 +25,7 @@ class MusicListViewModel @Inject constructor(
             val musicsList = repositoryImpl.getApiData()
             Log.d("myTag", musicsList.toString())
 
-//            postMusicList.postValue(musicsList)
+            postMusicList.postValue(musicsList)
         }
     }
 
