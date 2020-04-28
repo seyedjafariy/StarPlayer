@@ -13,7 +13,7 @@ class MusicRepositoryImpl @Inject constructor(
     override suspend fun getApiData(): List<LocalMusic> {
         val localMusicList: MutableList<LocalMusic> = ArrayList<LocalMusic>().toMutableList()
         return withContext(Dispatchers.IO) {
-            val musicList = webServiceApi.getMusics()
+            val musicList = webServiceApi.getMusics(1,10)
 
             if (musicList.isSuccessful && musicList.body()?.isNotEmpty()!!) {
                 musicList.body()?.forEach {
