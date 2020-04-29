@@ -1,6 +1,6 @@
 package com.worldsnas.starplayer.model
 
-data class LocalMusic(
+data class MusicRepoModel(
     val id: Int,
     val title: String,
     val artist: String,

@@ -22,7 +22,7 @@ import com.worldsnas.starplayer.databinding.FragmentMusicsListBinding
 import com.worldsnas.starplayer.di.components.DaggerMusicListComponent
 import com.worldsnas.starplayer.di.components.MusicListComponent
 import com.worldsnas.starplayer.model.Music
-import com.worldsnas.starplayer.model.LocalMusic
+import com.worldsnas.starplayer.model.MusicRepoModel
 import com.worldsnas.starplayer.view.ViewModelFactory
 import javax.inject.Inject
 
@@ -64,7 +64,7 @@ class MusicsListFragment : Fragment() {
 
     private fun liveDataSetup() {
 
-        val musicObserver = Observer<List<LocalMusic>> {
+        val musicObserver = Observer<List<MusicRepoModel>> {
 
             val musics = it
             Log.d("tag", it.toString())

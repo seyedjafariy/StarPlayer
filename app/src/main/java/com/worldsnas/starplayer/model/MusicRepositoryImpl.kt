@@ -10,8 +10,8 @@ class MusicRepositoryImpl @Inject constructor(
     private val webServiceApi: WebServiceApi
 ) : MusicRepository {
 
-    override suspend fun getApiData(): List<LocalMusic> {
-        val localMusicList: MutableList<LocalMusic> = ArrayList<LocalMusic>().toMutableList()
+    override suspend fun getApiData(): List<MusicRepoModel> {
+        val musicRepoModelList: MutableList<MusicRepoModel> = ArrayList<MusicRepoModel>().toMutableList()
         return withContext(Dispatchers.IO) {
             val musicList = webServiceApi.getMusics(1,10)
 
@@ -19,7 +19,7 @@ class MusicRepositoryImpl @Inject constructor(
                 musicList.body()?.forEach {
 
                     val music =
-                        LocalMusic(
+                        MusicRepoModel(
                             it.id.toInt(),
                             it.name,
                             it.artist,
@@ -27,14 +27,14 @@ class MusicRepositoryImpl @Inject constructor(
                             "genre",
                             it.musicLink
                         )
-                    localMusicList += music
+                    musicRepoModelList += music
                 }
             }
-            return@withContext localMusicList
+            return@withContext musicRepoModelList
         }
     }
 
-    override suspend fun getLocalData(): List<LocalMusic> =
+    override suspend fun getLocalData(): List<MusicRepoModel> =
         withContext(Dispatchers.IO) {
             return@withContext localMusicProvider.getAllMusic()
         }

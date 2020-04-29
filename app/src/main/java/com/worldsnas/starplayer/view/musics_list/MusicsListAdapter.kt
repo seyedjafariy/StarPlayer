@@ -7,10 +7,10 @@ import androidx.recyclerview.widget.ListAdapter
 import com.worldsnas.starplayer.core.BaseViewHolder
 import com.worldsnas.starplayer.databinding.ItemMusicBinding
 import com.worldsnas.starplayer.model.Music
-import com.worldsnas.starplayer.model.LocalMusic
+import com.worldsnas.starplayer.model.MusicRepoModel
 
 class MusicsListAdapter(private var onItemClick: (Music) -> Unit) :
-    ListAdapter<LocalMusic, MusicListItemViewHolder>(DiffCallback) {
+    ListAdapter<MusicRepoModel, MusicListItemViewHolder>(DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MusicListItemViewHolder {
         val musicViewBinding: ItemMusicBinding =
@@ -28,16 +28,16 @@ class MusicListItemViewHolder(
     private val mBinding: ItemMusicBinding,
     private val onItemClick: ((Music) -> Unit)
 ) :
-    BaseViewHolder<LocalMusic>(mBinding.root) {
+    BaseViewHolder<MusicRepoModel>(mBinding.root) {
 
-    override fun onBind(obj: LocalMusic) {
+    override fun onBind(obj: MusicRepoModel) {
         mBinding.txtMusicTitle.text = obj.title
         mBinding.txtArtist.text = obj.artist
 
         sendToPlay(obj)
     }
 
-    private fun sendToPlay(obj: LocalMusic) {
+    private fun sendToPlay(obj: MusicRepoModel) {
         mBinding.root.setOnClickListener {
             val localMusic = Music(
                 obj.id,
@@ -53,12 +53,12 @@ class MusicListItemViewHolder(
     }
 }
 
-object DiffCallback : DiffUtil.ItemCallback<LocalMusic>() {
-    override fun areItemsTheSame(oldItem: LocalMusic, newItem: LocalMusic): Boolean {
+object DiffCallback : DiffUtil.ItemCallback<MusicRepoModel>() {
+    override fun areItemsTheSame(oldItem: MusicRepoModel, newItem: MusicRepoModel): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: LocalMusic, newItem: LocalMusic): Boolean {
+    override fun areContentsTheSame(oldItem: MusicRepoModel, newItem: MusicRepoModel): Boolean {
         return oldItem == newItem
     }
 }
