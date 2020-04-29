@@ -18,5 +18,9 @@
         android:id="@+id/playerFragment"
         android:name="com.worldsnas.starplayer.view.PlayerFragment"
         android:label="fragment_player"
-        tools:layout="@layout/fragment_player" />
+        tools:layout="@layout/fragment_player" >
+        <argument
+            android:name="music"
+            app:argType="com.worldsnas.starplayer.model.Music" />
+    </fragment>
 </navigation>

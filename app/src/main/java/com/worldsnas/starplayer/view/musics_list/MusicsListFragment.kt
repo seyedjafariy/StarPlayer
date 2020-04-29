@@ -128,10 +128,9 @@ class MusicsListFragment : Fragment() {
     }
 
     private fun musicListener(music: Music) {
-        val bundle = bundleOf(ConstValues.BUNDLE_KEY_MUSIC_INFO to music)
+        val action = MusicsListFragmentDirections.actionMusicsListFragmentToPlayerFragment(music)
 
-        findNavController()
-            .navigate(R.id.action_musicsListFragment_to_playerFragment, bundle)
+        findNavController().navigate(action)
     }
 
 }

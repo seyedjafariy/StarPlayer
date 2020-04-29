@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.navArgs
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -71,8 +72,8 @@ class PlayerFragment : Fragment() {
     }
 
     private fun setMusicArguments() {
-        music = arguments?.getParcelable(ConstValues.BUNDLE_KEY_MUSIC_INFO)
-            ?: throw Throwable("Did not Receive Anything ")
+        val args: PlayerFragmentArgs by navArgs()
+        music = args.music
 
         viewBinding?.tvMusicTitle?.text = music.title
         viewBinding?.tvMusicArtist?.text = music.artist

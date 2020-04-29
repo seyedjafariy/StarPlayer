@@ -1,8 +1,12 @@
+import org.jetbrains.kotlin.utils.addToStdlib.safeAs
+
 plugins {
     id(BuildPlugins.androidApplication)
     id(BuildPlugins.kotlinAndroid)
     id(BuildPlugins.kotlinAndroidExtensions)
     id(BuildPlugins.kotlinKapt)
+    id(BuildPlugins.safeArgs)
+
 }
 
 android {
