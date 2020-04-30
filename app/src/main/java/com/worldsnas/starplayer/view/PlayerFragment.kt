@@ -26,7 +26,7 @@ class PlayerFragment : Fragment() {
     private lateinit var playerComponent: PlayerComponent
     private var exoPlayer: SimpleExoPlayer? = null
     private var viewBinding: FragmentPlayerBinding? = null
-    private lateinit var music: Music
+    private lateinit var musicArgs: Music
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,7 +49,7 @@ class PlayerFragment : Fragment() {
         exoPlayer = SimpleExoPlayer.Builder(context!!).build()
         viewBinding?.exoControlView?.player = exoPlayer
 
-        val filePath = ConstValues.PRE_ADDRESS_VOLUME + music.address
+        val filePath = ConstValues.PRE_ADDRESS_VOLUME + musicArgs.address
         val mediaSource = buildMediaSource(Uri.parse(filePath))
         exoPlayer?.prepare(mediaSource, false, false)
     }
@@ -73,10 +73,10 @@ class PlayerFragment : Fragment() {
 
     private fun setMusicArguments() {
         val args: PlayerFragmentArgs by navArgs()
-        music = args.music
+        musicArgs = args.music
 
-        viewBinding?.tvMusicTitle?.text = music.title
-        viewBinding?.tvMusicArtist?.text = music.artist
+        viewBinding?.tvMusicTitle?.text = musicArgs.title
+        viewBinding?.tvMusicArtist?.text = musicArgs.artist
     }
 
     private fun daggerSetup() {
