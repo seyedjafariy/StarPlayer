@@ -19,4 +19,13 @@
         android:name="com.worldsnas.starplayer.view.PlayerFragment"
         android:label="fragment_player"
         tools:layout="@layout/fragment_player" />
+    <fragment
+        android:id="@+id/onlineMusicsListFragment"
+        android:name="com.worldsnas.starplayer.view.online_music_list.OnlineMusicListFragment"
+        android:label="fragment_online_musics_list"
+        tools:layout="@layout/fragment_online_musics_list" >
+        <action
+            android:id="@+id/action_onlineMusicsListFragment_to_playerFragment"
+            app:destination="@id/playerFragment" />
+    </fragment>
 </navigation>

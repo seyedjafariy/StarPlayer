@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="fragment_padding">16dp</dimen>
+
+    <dimen name="eight_dp">8dp</dimen>
+    <dimen name="sixteen_sp">16sp</dimen>
+    <dimen name="twelve_sp">12sp</dimen>
+    <dimen name="two_dp">2dp</dimen>
+    <dimen name="sixteen_dp">16dp</dimen>
+    <dimen name="forty_eight_dp">48dp</dimen>
+
 </resources>

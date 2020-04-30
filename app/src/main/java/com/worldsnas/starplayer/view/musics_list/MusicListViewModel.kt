@@ -1,12 +1,10 @@
 package com.worldsnas.starplayer.view.musics_list
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.worldsnas.starplayer.model.LocalMusicProvider
-import com.worldsnas.starplayer.model.LocalMusicProviderImpl
 import com.worldsnas.starplayer.model.Music
 import kotlinx.coroutines.*
 import javax.inject.Inject
