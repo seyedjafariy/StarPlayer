@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.worldsnas.starplayer.view.custom.IransansTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/txt_music_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -28,10 +28,11 @@
         app:layout_constraintLeft_toRightOf="@+id/img_music"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.worldsnas.starplayer.view.custom.IransansTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/txt_music_artist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@android:"
         android:layout_marginStart="@dimen/eight_dp"
         android:layout_marginTop="@dimen/two_dp"
         android:textColor="@color/textBlack"
