@@ -2,11 +2,23 @@
 <resources>
     <dimen name="fragment_padding">16dp</dimen>
 
-    <dimen name="eight_dp">8dp</dimen>
-    <dimen name="sixteen_sp">16sp</dimen>
-    <dimen name="twelve_sp">12sp</dimen>
-    <dimen name="two_dp">2dp</dimen>
-    <dimen name="sixteen_dp">16dp</dimen>
-    <dimen name="forty_eight_dp">48dp</dimen>
+    <!--margin-->
+    <dimen name="margin_all_8dp">8dp</dimen>
+    <dimen name="margin_all_2dp">2dp</dimen>
+
+    <!--padding-->
+    <dimen name="padding_all_8dp">8dp</dimen>
+    <dimen name="padding_all_16dp">16dp</dimen>
+
+    <!--text size-->
+    <dimen name="text_size_medium">12sp</dimen>
+    <dimen name="text_size_large">16sp</dimen>
+
+    <!--    width-->
+    <dimen name="width_all_48dp">48dp</dimen>
+
+    <!--    height-->
+    <dimen name="height_all_48dp">48dp</dimen>
+
 
 </resources>

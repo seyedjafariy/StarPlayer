@@ -7,7 +7,7 @@ import dagger.Component
 @FragmentScope
 @Component(
     dependencies = [AppComponent::class],
-    modules = [ViewModelModule::class, MusicProviderModule::class]
+    modules = [ViewModelModule::class, MusicProviderModule::class,RepositoryModule::class]
 )
 interface MusicListComponent {
 

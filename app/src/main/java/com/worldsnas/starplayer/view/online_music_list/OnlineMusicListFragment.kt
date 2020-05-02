@@ -7,8 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.worldsnas.starplayer.App
 import com.worldsnas.starplayer.ConstValues
 import com.worldsnas.starplayer.R
 import com.worldsnas.starplayer.databinding.FragmentOnlineMusicsListBinding
@@ -16,24 +18,27 @@ import com.worldsnas.starplayer.di.DaggerOnlineMusicListComponent
 import com.worldsnas.starplayer.di.OnlineMusicListComponent
 import com.worldsnas.starplayer.model.LocalMusic
 import com.worldsnas.starplayer.model.Music
+import com.worldsnas.starplayer.view.ViewModelFactory
 import kotlinx.android.synthetic.main.fragment_online_musics_list.view.*
 import javax.inject.Inject
 
-/**
- * created by Roohandeh  4/29/2020
- */
+private val TAG = OnlineMusicListFragment::class.simpleName
+
 class OnlineMusicListFragment : Fragment() {
 
 
-    private val TAG = OnlineMusicListFragment::class.java.simpleName
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val onlineMusicListViewModel by
+    viewModels<OnlineMusicListViewModel> { viewModelFactory }
+
+
     private var _binding: FragmentOnlineMusicsListBinding? = null
     private val binding get() = _binding!!
     private lateinit var onlineMusicListComponent: OnlineMusicListComponent
     private val adapter =
         OnlineMusicListAdapter { item -> onlineMusicListListener(item) }
-
-    @Inject
-    lateinit var onlineMusicListViewModel: OnlineMusicListViewModel
 
 
     override fun onCreateView(
@@ -53,9 +58,10 @@ class OnlineMusicListFragment : Fragment() {
     }
 
     private fun initDagger() {
-        onlineMusicListComponent = DaggerOnlineMusicListComponent.create()
+        onlineMusicListComponent = DaggerOnlineMusicListComponent.builder()
+            .appComponent((activity!!.application as App).appComponent)
+            .build()
         onlineMusicListComponent.inject(this)
-
     }
 
     private fun onlineMusicListListener(obj: LocalMusic) {
@@ -70,7 +76,7 @@ class OnlineMusicListFragment : Fragment() {
         val musicObserver = Observer<List<Music>> {
 
             val musics = it
-            Log.d(TAG, it.toString())
+            Log.i(TAG, it.toString())
             adapter.submitList(musics)
         }
         onlineMusicListViewModel.postLiveMusicList()?.observe(viewLifecycleOwner, musicObserver)
