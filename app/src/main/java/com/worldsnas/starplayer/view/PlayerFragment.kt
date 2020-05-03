@@ -27,6 +27,7 @@ class PlayerFragment : Fragment() {
     private var exoPlayer: SimpleExoPlayer? = null
     private var viewBinding: FragmentPlayerBinding? = null
     private lateinit var musicArgs: Music
+    private val args: PlayerFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -72,7 +73,6 @@ class PlayerFragment : Fragment() {
     }
 
     private fun setMusicArguments() {
-        val args: PlayerFragmentArgs by navArgs()
         musicArgs = args.music
 
         viewBinding?.tvMusicTitle?.text = musicArgs.title
