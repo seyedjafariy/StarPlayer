@@ -4,6 +4,7 @@ import android.content.ContentResolver
 import android.content.ContentUris
 import android.net.Uri
 import android.provider.MediaStore
+import com.worldsnas.starplayer.ConstValues
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -43,9 +44,10 @@ constructor(private val contentResolver: ContentResolver) : LocalMusicProvider {
                     val album = cursor.getString(albumColumn)
                     val artist = cursor.getString(artistColumn)
 
-                    val contentUri =
-                        ContentUris.withAppendedId(uri, id.toLong()).path
-                    if (contentUri.isNullOrEmpty()) {
+                    val contentUri = ConstValues.PRE_ADDRESS_VOLUME +
+                            ContentUris.withAppendedId(uri, id.toLong()).path
+
+                    if (contentUri.isEmpty()) {
                         continue
                     } else {
                         val musicModel = MusicRepoModel(
