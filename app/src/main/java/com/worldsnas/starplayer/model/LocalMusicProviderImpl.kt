@@ -4,7 +4,6 @@ import android.content.ContentResolver
 import android.content.ContentUris
 import android.net.Uri
 import android.provider.MediaStore
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -21,12 +20,11 @@ constructor(private val contentResolver: ContentResolver) : LocalMusicProvider {
     )
     private val uri: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
 
-    override suspend fun getAllMusic(): List<Music> {
-        return withContext(IO) {
-
+    override suspend fun getAllMusic(): List<MusicRepoModel> =
+        withContext(IO) {
 
             val cursor = contentResolver.query(uri, projection, null, null, null, null)
-            val musics: ArrayList<Music> = ArrayList()
+            val musicRepoModels: ArrayList<MusicRepoModel> = ArrayList()
 
             cursor?.use {
                 cursor.moveToFirst()
@@ -50,7 +48,7 @@ constructor(private val contentResolver: ContentResolver) : LocalMusicProvider {
                     if (contentUri.isNullOrEmpty()) {
                         continue
                     } else {
-                        val musicModel = Music(
+                        val musicModel = MusicRepoModel(
                             id,
                             title,
                             album,
@@ -59,13 +57,12 @@ constructor(private val contentResolver: ContentResolver) : LocalMusicProvider {
                             contentUri
                         )
 
-                        musics += musicModel
+                        musicRepoModels += musicModel
                     }
                 } while (cursor.moveToNext())
             }
-            return@withContext musics
+            musicRepoModels
         }
-    }
 }
 
 

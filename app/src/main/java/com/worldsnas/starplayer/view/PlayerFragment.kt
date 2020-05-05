@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.navArgs
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
@@ -13,9 +14,9 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.worldsnas.starplayer.App
 import com.worldsnas.starplayer.ConstValues
 import com.worldsnas.starplayer.databinding.FragmentPlayerBinding
-import com.worldsnas.starplayer.di.DaggerPlayerComponent
-import com.worldsnas.starplayer.di.PlayerComponent
-import com.worldsnas.starplayer.model.LocalMusic
+import com.worldsnas.starplayer.di.components.DaggerPlayerComponent
+import com.worldsnas.starplayer.di.components.PlayerComponent
+import com.worldsnas.starplayer.model.Music
 
 /**
  * Fragment to Play Musics
@@ -25,7 +26,8 @@ class PlayerFragment : Fragment() {
     private lateinit var playerComponent: PlayerComponent
     private var exoPlayer: SimpleExoPlayer? = null
     private var viewBinding: FragmentPlayerBinding? = null
-    private lateinit var music: LocalMusic
+    private lateinit var musicArgs: Music
+    private val args: PlayerFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,7 +50,7 @@ class PlayerFragment : Fragment() {
         exoPlayer = SimpleExoPlayer.Builder(context!!).build()
         viewBinding?.exoControlView?.player = exoPlayer
 
-        val filePath = ConstValues.PRE_ADDRESS_VOLUME + music.address
+        val filePath = ConstValues.PRE_ADDRESS_VOLUME + musicArgs.address
         val mediaSource = buildMediaSource(Uri.parse(filePath))
         exoPlayer?.prepare(mediaSource, false, false)
     }
@@ -71,11 +73,10 @@ class PlayerFragment : Fragment() {
     }
 
     private fun setMusicArguments() {
-        music = arguments?.getParcelable(ConstValues.BUNDLE_KEY_MUSIC_INFO)
-            ?: throw Throwable("Did not Receive Anything ")
+        musicArgs = args.music
 
-        viewBinding?.tvMusicTitle?.text = music.title
-        viewBinding?.tvMusicArtist?.text = music.artist
+        viewBinding?.tvMusicTitle?.text = musicArgs.title
+        viewBinding?.tvMusicArtist?.text = musicArgs.artist
     }
 
     private fun daggerSetup() {

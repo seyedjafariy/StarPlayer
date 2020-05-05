@@ -19,10 +19,10 @@ import com.worldsnas.starplayer.App
 import com.worldsnas.starplayer.ConstValues
 import com.worldsnas.starplayer.R
 import com.worldsnas.starplayer.databinding.FragmentMusicsListBinding
-import com.worldsnas.starplayer.di.DaggerMusicListComponent
-import com.worldsnas.starplayer.di.MusicListComponent
-import com.worldsnas.starplayer.model.LocalMusic
+import com.worldsnas.starplayer.di.components.DaggerMusicListComponent
+import com.worldsnas.starplayer.di.components.MusicListComponent
 import com.worldsnas.starplayer.model.Music
+import com.worldsnas.starplayer.model.MusicRepoModel
 import com.worldsnas.starplayer.view.ViewModelFactory
 import javax.inject.Inject
 
@@ -64,7 +64,7 @@ class MusicsListFragment : Fragment() {
 
     private fun liveDataSetup() {
 
-        val musicObserver = Observer<List<Music>> {
+        val musicObserver = Observer<List<MusicRepoModel>> {
 
             val musics = it
             Log.d("tag", it.toString())
@@ -127,11 +127,10 @@ class MusicsListFragment : Fragment() {
         }
     }
 
-    private fun musicListener(localMusic: LocalMusic) {
-        val bundle = bundleOf(ConstValues.BUNDLE_KEY_MUSIC_INFO to localMusic)
+    private fun musicListener(music: Music) {
+        val action = MusicsListFragmentDirections.actionMusicsListFragmentToPlayerFragment(music)
 
-        findNavController()
-            .navigate(R.id.action_musicsListFragment_to_playerFragment, bundle)
+        findNavController().navigate(action)
     }
 
 }

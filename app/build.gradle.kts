@@ -1,10 +1,12 @@
-import AndroidKts.fragmentKts
+import org.jetbrains.kotlin.utils.addToStdlib.safeAs
 
 plugins {
     id(BuildPlugins.androidApplication)
     id(BuildPlugins.kotlinAndroid)
     id(BuildPlugins.kotlinAndroidExtensions)
     id(BuildPlugins.kotlinKapt)
+    id(BuildPlugins.safeArgs)
+
 }
 
 android {
@@ -64,4 +66,12 @@ dependencies {
 
     implementation(Ui.navigationFragment)
     implementation(Ui.navigationUi)
+
+    implementation(MoshiLibs.moshiKotlin)
+    implementation(MoshiLibs.moshiRetrofit)
+
+
+    implementation(Network.okHttpLogging)
+    implementation(Network.retrofit)
+    implementation(Network.okHttp)
 }
