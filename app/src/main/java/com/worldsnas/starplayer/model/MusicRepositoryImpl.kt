@@ -12,33 +12,28 @@ class MusicRepositoryImpl @Inject constructor(
 
     override suspend fun getApiData(page: Int, count: Int): List<MusicRepoModel> =
         withContext(Dispatchers.IO) {
-            val musicRepoModelList: MutableList<MusicRepoModel> = ArrayList()
+            lateinit var musicRepoModelList: List<MusicRepoModel>
+            val apiMusicList = webServiceApi.getMusics(page, count)
 
-            val musicList = webServiceApi.getMusics(page, count)
+            if (apiMusicList.isSuccessful && apiMusicList.body()?.isNotEmpty()!!) {
+                musicRepoModelList = apiMusicList.body()?.map {
 
-            if (musicList.isSuccessful && musicList.body()?.isNotEmpty()!!) {
-                musicList.body()?.map {
-
-                    val music =
-                        MusicRepoModel(
-                            it.id.toInt(),
-                            it.name,
-                            it.artist,
-                            "album",
-                            "genre",
-                            it.musicLink
-                        )
-                    musicRepoModelList += music
-                }
+                    val music = MusicRepoModel(
+                        it.id.toInt(),
+                        it.name,
+                        it.artist,
+                        "album",
+                        "genre",
+                        it.musicLink
+                    )
+                    music
+                }!!
             }
             musicRepoModelList
         }
-
 
     override suspend fun getLocalData(): List<MusicRepoModel> =
         withContext(Dispatchers.IO) {
             localMusicProvider.getAllMusic()
         }
-
-
 }
