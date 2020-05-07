@@ -47,20 +47,15 @@ constructor(private val contentResolver: ContentResolver) : LocalMusicProvider {
                     val contentUri = ConstValues.PRE_ADDRESS_VOLUME +
                             ContentUris.withAppendedId(uri, id.toLong()).path
 
-                    if (contentUri.isEmpty()) {
-                        continue
-                    } else {
-                        val musicModel = MusicRepoModel(
-                            id,
-                            title,
-                            album,
-                            artist,
-                            "genre",
-                            contentUri
-                        )
-
-                        musicRepoModels += musicModel
-                    }
+                    val musicModel = MusicRepoModel(
+                        id,
+                        title,
+                        album,
+                        artist,
+                        "genre",
+                        contentUri
+                    )
+                    musicRepoModels += musicModel
                 } while (cursor.moveToNext())
             }
             musicRepoModels
