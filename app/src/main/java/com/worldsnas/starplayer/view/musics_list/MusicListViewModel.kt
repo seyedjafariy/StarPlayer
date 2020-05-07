@@ -28,13 +28,6 @@ class MusicListViewModel @Inject constructor(
         }
     }
 
-    private fun getOnlineMusic() {
-        viewModelScope.launch {
-            val musicsList = musicRepository.getApiData(1, 10)
-            postMusicList.postValue(musicsList)
-        }
-    }
-
     fun postMusic(): LiveData<List<MusicRepoModel>> {
         return postMusicList
     }
