@@ -1,5 +1,6 @@
-package com.worldsnas.starplayer.di
+package com.worldsnas.starplayer.di.components
 
+import com.worldsnas.starplayer.di.FragmentScope
 import com.worldsnas.starplayer.view.PlayerFragment
 import dagger.Component
 @FragmentScope
