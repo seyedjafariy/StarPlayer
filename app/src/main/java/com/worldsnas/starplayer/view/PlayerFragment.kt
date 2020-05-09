@@ -12,7 +12,6 @@ import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.worldsnas.starplayer.App
-import com.worldsnas.starplayer.ConstValues
 import com.worldsnas.starplayer.databinding.FragmentPlayerBinding
 import com.worldsnas.starplayer.di.components.DaggerPlayerComponent
 import com.worldsnas.starplayer.di.components.PlayerComponent
@@ -50,7 +49,7 @@ class PlayerFragment : Fragment() {
         exoPlayer = SimpleExoPlayer.Builder(context!!).build()
         viewBinding?.exoControlView?.player = exoPlayer
 
-        val filePath = ConstValues.PRE_ADDRESS_VOLUME + musicArgs.address
+        val filePath = musicArgs.address
         val mediaSource = buildMediaSource(Uri.parse(filePath))
         exoPlayer?.prepare(mediaSource, false, false)
     }
