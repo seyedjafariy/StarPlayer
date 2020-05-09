@@ -10,14 +10,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import com.worldsnas.starplayer.App
 import com.worldsnas.starplayer.ConstValues
-import com.worldsnas.starplayer.R
+import com.worldsnas.starplayer.ExoPlayerService
 import com.worldsnas.starplayer.databinding.FragmentMusicsListBinding
 import com.worldsnas.starplayer.di.components.DaggerMusicListComponent
 import com.worldsnas.starplayer.di.components.MusicListComponent
@@ -31,6 +29,8 @@ class MusicsListFragment : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    private var musicList = ArrayList<Music>()
 
     private val musicListViewModel by
     viewModels<MusicListViewModel> { viewModelFactory }
@@ -67,10 +67,18 @@ class MusicsListFragment : Fragment() {
         val musicObserver = Observer<List<MusicRepoModel>> {
 
             val musics = it
+            prepareServerMusicList(musics)
             Log.d("tag", it.toString())
             musicListAdapter.submitList(musics)
         }
         musicListViewModel.postMusic().observe(viewLifecycleOwner, musicObserver)
+    }
+
+    private fun prepareServerMusicList(musics: List<MusicRepoModel>) {
+            musicList.clear()
+        for (musicRepo in musics) {
+            musicList.add(Music(musicRepo.id,musicRepo.title,musicRepo.artist,musicRepo.album,musicRepo.genre,musicRepo.address))
+        }
     }
 
     private fun daggerSetup() {
@@ -128,10 +136,12 @@ class MusicsListFragment : Fragment() {
     }
 
     private fun musicListener(music: Music) {
-        val action = MusicsListFragmentDirections.actionMusicsListFragmentToPlayerFragment(music)
-
-        findNavController().navigate(action)
+//        val action = MusicsListFragmentDirections.actionMusicsListFragmentToPlayerFragment(music)
+//
+//        findNavController().navigate(action)
+        ExoPlayerService.actionStart(context, musicList)
     }
+
 
 }
 
