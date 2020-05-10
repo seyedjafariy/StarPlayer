@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.media.AudioAttributes
+import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.media.AudioManager.OnAudioFocusChangeListener
 import android.net.Uri
@@ -52,11 +54,22 @@ class ExoPlayerService : Service(), Player.EventListener,
 
     private fun makeAudioManager() {
         mAudioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        if (mAudioManager != null) mAudioManager!!.requestAudioFocus(
-            this,
-            AudioManager.STREAM_MUSIC,
-            AudioManager.AUDIOFOCUS_GAIN
-        )
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (mAudioManager != null)(mAudioManager as AudioManager).requestAudioFocus(AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN).setAudioAttributes(AudioAttributes.Builder().
+            setUsage(AudioAttributes.USAGE_GAME)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                .build())
+                .setAcceptsDelayedFocusGain(true)
+                .setOnAudioFocusChangeListener(this).build())
+
+        } else {
+            if (mAudioManager != null) mAudioManager!!.requestAudioFocus(
+                this,
+                AudioManager.STREAM_MUSIC,
+                AudioManager.AUDIOFOCUS_GAIN
+            )
+        }
     }
 
     override fun onDestroy() {
@@ -364,7 +377,7 @@ class ExoPlayerService : Service(), Player.EventListener,
             )
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) notificationBuilder.setChannelId(
-               createNotificationChannel("starPlayer","exoPlayerService")
+                createNotificationChannel("starPlayer", "exoPlayerService")
             )
             startForeground(
                 NOTIFICATION_ID.FOREGROUND_SERVICE,
@@ -375,9 +388,11 @@ class ExoPlayerService : Service(), Player.EventListener,
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun createNotificationChannel(channelId: String, channelName: String): String{
-        val chan = NotificationChannel(channelId,
-            channelName, NotificationManager.IMPORTANCE_NONE)
+    private fun createNotificationChannel(channelId: String, channelName: String): String {
+        val chan = NotificationChannel(
+            channelId,
+            channelName, NotificationManager.IMPORTANCE_NONE
+        )
         chan.lightColor = Color.BLUE
         chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
         val service = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
