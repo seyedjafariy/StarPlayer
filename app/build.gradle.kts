@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.utils.addToStdlib.safeAs
 
 plugins {
     id(BuildPlugins.androidApplication)
@@ -70,6 +69,9 @@ dependencies {
     implementation(MoshiLibs.moshiKotlin)
     implementation(MoshiLibs.moshiRetrofit)
 
+    implementation(Database.roomRuntime)
+    kapt(Database.roomCompiler)
+    implementation(Database.roomKotlinCoroutine)
 
     implementation(Network.okHttpLogging)
     implementation(Network.retrofit)
