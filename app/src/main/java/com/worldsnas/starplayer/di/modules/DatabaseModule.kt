@@ -13,4 +13,9 @@ object DatabaseModule {
     @JvmStatic
     fun provideRoom(application: Application) =
         Room.databaseBuilder(application, AppDataBase::class.java, "starDb").build()
+
+    @Provides
+    @JvmStatic
+    fun provideDao(dataBase: AppDataBase) = dataBase.favoriteMusicDao()
+
 }
