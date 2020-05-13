@@ -1,19 +1,21 @@
 package com.worldsnas.starplayer.model.persistent
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+
+import androidx.room.*
+import com.worldsnas.starplayer.model.MusicRepoModel
 
 @Dao
 interface FavoriteMusicDao {
 
     @Query("select * from favorites")
-    suspend fun getFavoriteMusics(): List<FavoriteMusic>
+    suspend fun getAllMusics(): List<MusicRepoModel>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(favoriteMusic: FavoriteMusic)
 
     @Delete
-    suspend fun delete(favoriteMusic: FavoriteMusic)
+    suspend fun delete(musicRepoModel: FavoriteMusic)
+
+    @Update
+    suspend fun update(musicRepoModel: FavoriteMusic)
 }
