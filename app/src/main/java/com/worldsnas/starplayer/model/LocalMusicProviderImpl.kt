@@ -53,7 +53,8 @@ constructor(private val contentResolver: ContentResolver) : LocalMusicProvider {
                         album,
                         artist,
                         "genre",
-                        contentUri
+                        contentUri,
+                        false
                     )
                     musicRepoModels += musicModel
                 } while (cursor.moveToNext())
