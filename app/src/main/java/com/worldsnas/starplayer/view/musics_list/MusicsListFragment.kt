@@ -23,11 +23,12 @@ import com.worldsnas.starplayer.di.components.DaggerMusicListComponent
 import com.worldsnas.starplayer.di.components.MusicListComponent
 import com.worldsnas.starplayer.model.Music
 import com.worldsnas.starplayer.model.MusicRepoModel
+import com.worldsnas.starplayer.model.persistent.FavoriteMusic
 import com.worldsnas.starplayer.view.ViewModelFactory
 import javax.inject.Inject
 
 
-class MusicsListFragment : Fragment() {
+class MusicsListFragment : Fragment(), OnClickListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -35,7 +36,8 @@ class MusicsListFragment : Fragment() {
     private val musicListViewModel by
     viewModels<MusicListViewModel> { viewModelFactory }
 
-    private val musicListAdapter = MusicsListAdapter { item -> musicListener(item) }
+    //man hanoz nemidonam in chetori amal mikone
+    private val musicListAdapter = MusicsListAdapter(this)
 
     private var _binding: FragmentMusicsListBinding? = null
     private val binding get() = _binding!!
@@ -127,10 +129,14 @@ class MusicsListFragment : Fragment() {
         }
     }
 
-    private fun musicListener(music: Music) {
+    override fun onItemClickListener(music: Music) {
         val action = MusicsListFragmentDirections.actionMusicsListFragmentToPlayerFragment(music)
 
         findNavController().navigate(action)
+    }
+
+    override fun onFavoriteClickListener(favoriteMusic: FavoriteMusic) {
+        musicListViewModel.favoritesHandler(favoriteMusic)
     }
 
 }
