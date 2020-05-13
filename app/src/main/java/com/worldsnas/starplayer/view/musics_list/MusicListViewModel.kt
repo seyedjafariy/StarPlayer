@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.worldsnas.starplayer.model.MusicRepoModel
 import com.worldsnas.starplayer.model.MusicRepository
-import com.worldsnas.starplayer.model.MusicRepositoryImpl
+import com.worldsnas.starplayer.model.persistent.FavoriteMusic
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
@@ -16,7 +16,7 @@ class MusicListViewModel @Inject constructor(
 ) :
     ViewModel() {
     init {
-        getLocalMusic()
+        saveMusic()
     }
 
     private val postMusicList = MutableLiveData<List<MusicRepoModel>>()
@@ -30,5 +30,18 @@ class MusicListViewModel @Inject constructor(
 
     fun postMusic(): LiveData<List<MusicRepoModel>> {
         return postMusicList
+    }
+
+    private fun saveMusic() {
+        viewModelScope.launch {
+            musicRepository.saveToDatabase()
+        }
+        getLocalMusic()
+
+    }
+
+    fun favoritesHandler(favoriteMusic: FavoriteMusic) {
+
+        viewModelScope.launch { musicRepository.favoriteItemHandler(favoriteMusic) }
     }
 }
