@@ -6,6 +6,8 @@ import com.worldsnas.starplayer.model.LocalMusicProvider
 import com.worldsnas.starplayer.model.LocalMusicProviderImpl
 import com.worldsnas.starplayer.model.MusicRepository
 import com.worldsnas.starplayer.model.MusicRepositoryImpl
+import com.worldsnas.starplayer.model.persistent.AppDataBase
+import com.worldsnas.starplayer.model.persistent.FavoriteMusicDao
 import dagger.Module
 import dagger.Provides
 
@@ -22,8 +24,9 @@ object MusicProviderModule {
     @Provides
     fun provideMusicRepository(
         webServiceApi: WebServiceApi,
-        localMusicProvider: LocalMusicProvider
+        localMusicProvider: LocalMusicProvider, favoriteMusicDao: FavoriteMusicDao
+
     ): MusicRepository {
-        return MusicRepositoryImpl(localMusicProvider, webServiceApi)
+        return MusicRepositoryImpl(localMusicProvider, webServiceApi, favoriteMusicDao)
     }
 }
