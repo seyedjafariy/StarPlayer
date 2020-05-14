@@ -16,10 +16,10 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.RecyclerView
 import com.worldsnas.starplayer.App
 import com.worldsnas.starplayer.ConstValues
 import com.worldsnas.starplayer.ExoPlayerService
-import com.worldsnas.starplayer.ExoPlayerService.ACTION.Companion.START_TRACK_ACTION
 import com.worldsnas.starplayer.databinding.FragmentMusicsListBinding
 import com.worldsnas.starplayer.di.components.DaggerMusicListComponent
 import com.worldsnas.starplayer.di.components.MusicListComponent
@@ -59,6 +59,7 @@ class MusicsListFragment : Fragment() {
         storagePermissionCheck()
 
         binding.recyclerview.adapter = musicListAdapter
+
     }
 
     override fun onDestroyView() {
@@ -143,7 +144,7 @@ class MusicsListFragment : Fragment() {
 //        val action = MusicsListFragmentDirections.actionMusicsListFragmentToPlayerFragment(music)
 //
 //        findNavController().navigate(action)
-        ExoPlayerService.actionStart(context, musicList)
+        ExoPlayerService.actionStart(context, musicList,music)
     }
 
 

@@ -6,164 +6,106 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.media.AudioManager
-import android.media.AudioManager.OnAudioFocusChangeListener
 import android.net.Uri
 import android.os.Build
 import android.os.IBinder
 import android.os.Parcelable
 import android.text.TextUtils
 import androidx.core.app.NotificationCompat
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.*
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.trackselection.TrackSelectionArray
-import com.google.android.exoplayer2.ui.PlayerNotificationManager
-import com.google.android.exoplayer2.ui.PlayerNotificationManager.BitmapCallback
-import com.google.android.exoplayer2.ui.PlayerNotificationManager.MediaDescriptionAdapter
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.worldsnas.starplayer.model.Music
 import java.util.*
 
-class ExoPlayerService : Service(), Player.EventListener,
-    OnAudioFocusChangeListener {
+class ExoPlayerService : Service(), Player.EventListener {
     private var mediaSource: ConcatenatingMediaSource? = null
-    var playWhenReady = true
+
     var currentWindow = 0
     var playbackPosition: Long = 0
-    private var pausedByAudioListener = false
-    private val playerNotificationManager: PlayerNotificationManager? = null
-    private var mAudioManager: AudioManager? = null
-    private val notification: Notification? = null
-    override fun onCreate() {
-        super.onCreate()
-        reInit()
-    }
+    private var musicList: ArrayList<Music?>? = null
+    private var currentMusic: Music? = null
+
+
 
     private fun reInit() {
-        makeAudioManager()
-        resetDataQueue()
-        currentWindow = 0
         playbackPosition = 0
+        prepareCurrentWindow(musicList, currentMusic)
         initializePlayer()
     }
 
-    private fun makeAudioManager() {
-        mAudioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        if (mAudioManager != null) mAudioManager!!.requestAudioFocus(
-            this,
-            AudioManager.STREAM_MUSIC,
-            AudioManager.AUDIOFOCUS_GAIN
-        )
-    }
 
     override fun onDestroy() {
         super.onDestroy()
         releasePlayer()
-        if (mAudioManager != null) mAudioManager!!.abandonAudioFocus(this)
-        sendBroadcast_stateIdle()
     }
 
-    override fun onAudioFocusChange(focusChange: Int) {
-        if (focusChange >= 0 && (pausedByAudioListener || player!!.playWhenReady)) startPlayer() else {
-            if (player!!.playWhenReady) pausedByAudioListener = true
-            pausePlayer()
-        }
-    }
-
-    private fun resetDataQueue() {
-        if (trackModelsQueue == null) trackModelsQueue =
-            ArrayList() else trackModelsQueue!!.clear()
-    }
 
     private fun play(trackModel: Music?) {
         val trackModels = ArrayList<Music?>()
         trackModels.add(trackModel)
+        currentMusic = trackModel
         play(trackModels)
     }
 
     private fun play(trackModels: ArrayList<Music?>?) {
         reInit()
         if (trackModels != null) {
-            trackModelsQueue = trackModels
             val mediaSources =
                 arrayOfNulls<MediaSource>(trackModels.size)
             for (i in trackModels.indices) {
                 mediaSources[i] =
-                    buildMediaSource(Uri.parse(trackModels[i]!!.address))
+                    buildMediaSource(Uri.parse(trackModels[i]?.address))
             }
             mediaSource = ConcatenatingMediaSource(*mediaSources)
-
             player!!.prepare(mediaSource!!)
             startPlayer()
         }
     }
 
-    private fun add(trackModel: Music?) {
-        if (trackModelsQueue == null || trackModelsQueue!!.size == 0) play(
-            trackModel
-        ) else {
-            addTrackIfNotAdded(trackModel)
-        }
+    private fun prepareCurrentWindow(trackModels: ArrayList<Music?>?, currentMusic: Music?) {
+
+        if (trackModels != null && trackModels.size > 0 && currentMusic != null)
+            for (i in trackModels.indices) {
+                if (trackModels[i]?.id == currentMusic.id)
+                    currentWindow = i
+            }
     }
 
-    private fun addTrackIfNotAdded(trackModel: Music?) {
-        if (!isInCurrentQueue(trackModel)) {
-            mediaSource!!.addMediaSource(buildMediaSource(Uri.parse(trackModel!!.address)))
-            trackModelsQueue!!.add(trackModel)
-        }
-    }
-
-    private fun add(trackModels: ArrayList<Music?>) {
-        if (trackModelsQueue == null || trackModelsQueue!!.size == 0) play(
-            trackModels
-        ) else {
-            for (i in trackModels.indices) addTrackIfNotAdded(trackModels[i])
-        }
-    }
-
-    private fun isInCurrentQueue(trackModel: Music?): Boolean {
-        for (model in trackModelsQueue!!) if (model!!.id == trackModel!!.id) return true
-        return false
-    }
 
     private fun pausePlayer() {
         playbackPosition = player!!.currentPosition
         currentWindow = player!!.currentWindowIndex
         player!!.playWhenReady = false
-        player!!.playbackState
-        showCurrentTrackNotification()
+        showCurrentTrackNotification(musicList?.get(currentWindow))
     }
 
     private fun startPlayer() {
-        pausedByAudioListener = false
         player!!.seekTo(currentWindow, playbackPosition)
         player!!.playWhenReady = true
-        player!!.playbackState
-        showCurrentTrackNotification()
+        showCurrentTrackNotification(musicList?.get(currentWindow))
     }
 
     private fun initializePlayer() {
         if (player == null) {
-            player = ExoPlayerFactory.newSimpleInstance(
-                this,
-                DefaultRenderersFactory(this),
-                DefaultTrackSelector(),
-                DefaultLoadControl()
+            player = SimpleExoPlayer.Builder(this).setLoadControl(DefaultLoadControl())
+                .build()
+            (player as SimpleExoPlayer).setAudioAttributes(
+                com.google.android.exoplayer2.audio.AudioAttributes.Builder()
+                    .setUsage(C.USAGE_MEDIA)
+                    .setContentType(C.CONTENT_TYPE_SPEECH)
+                    .build(), true
             )
+
             player!!.seekTo(currentWindow, playbackPosition)
             player!!.addListener(this)
-            player!!.playWhenReady = playWhenReady
-            //            player.setRepeatMode(Player.REPEAT_MODE_OFF);
-            //            player.setShuffleModeEnabled(true);
+            player!!.playWhenReady = true
         }
     }
 
     private fun buildMediaSource(uri: Uri?): MediaSource? {
-        val userAgent = "exoplayer-aseman-uxan"
-        return ExtractorMediaSource.Factory(DefaultHttpDataSourceFactory(userAgent))
+        val userAgent = "star_player"
+        return ProgressiveMediaSource.Factory(DefaultHttpDataSourceFactory(userAgent))
             .createMediaSource(uri)
     }
 
@@ -178,69 +120,50 @@ class ExoPlayerService : Service(), Player.EventListener,
                     startPlayer()
                 }
                 ACTION.PAUSE_ACTION -> pausePlayer()
-                ACTION.REMOVE_ACTION_TRACK -> try {
-                    val music = intent.getParcelableExtra<Music>(TAG)
-                    var pos = -1
-                    var i = 0
-                    while (i < trackModelsQueue!!.size) {
-                        val tr = trackModelsQueue!![i]
-                        if (tr!!.id == music?.id) {
-                            pos = i
-                            break
-                        }
-                        i++
-                    }
-                    if (pos != -1) {
-                        trackModelsQueue!!.removeAt(pos)
-                        mediaSource!!.removeMediaSource(pos)
-                    }
-                } catch (ignored: Exception) {
-                }
-                ACTION.ACTION_BROADRCAST_TRACK -> broadCastCurrentTrack()
-                ACTION.START_TRACKS_ARRAY_ACTION -> play(
-                    intent.getParcelableArrayListExtra(
+                ACTION.START_TRACKS_ARRAY_ACTION -> {
+                    musicList = intent.getParcelableArrayListExtra(
                         TAG
                     )
-                )
+                    currentMusic = intent.getParcelableExtra("music")
+                    play(
+                        musicList
+                    )
+                }
                 ACTION.START_TRACK_ACTION -> play(
                     intent.getParcelableExtra<Music>(
                         TAG
                     )
                 )
-                ACTION.ADD_ACTION_singleTrack -> add(
-                    intent.getParcelableExtra<Music>(
-                        TAG
-                    )
-                )
-                ACTION.ADD_ACTION_tracksArray -> add(
-                    intent.getParcelableArrayListExtra(
-                        TAG
-                    )!!
-                )
-                ACTION.PREV_ACTION -> if (player!!.currentPosition > 3210) {
+
+                ACTION.PREV_ACTION -> {
                     val prev = player!!.previousWindowIndex
-                    if (prev >= 0 && prev < mediaSource!!.size) player!!.seekToDefaultPosition(
-                        prev
-                    ) else player!!.seekTo(0)
-                } else player!!.seekTo(0)
-                ACTION.NEXT_ACTION -> {
-                    val next = player!!.nextWindowIndex
-                    if (next >= 0 && next < mediaSource!!.size) player!!.seekToDefaultPosition(
-                        next
-                    ) else {
-                        player!!.seekTo(player!!.duration)
-                        pausePlayer()
+                    if (prev >= 0 && prev <= mediaSource!!.size) {
+                        player!!.seekToDefaultPosition(
+                            prev
+                        )
+                        currentWindow = prev
+                        currentMusic = musicList?.get(prev)
+                    } else {
+                        currentMusic = musicList?.get(musicList?.size!!-1)
+                        player?.seekTo(0)
+                        playbackPosition = 0
+                        reInit()
+                        startPlayer()
                     }
                 }
-                ACTION.PLAY_ACTION_From -> {
-                    val music = intent.getParcelableExtra<Music>(TAG)
-                    var i = 0
-                    while (i < trackModelsQueue!!.size) {
-                        if (trackModelsQueue!![i]!!.id == music?.id) {
-                            player!!.seekToDefaultPosition(i)
-                            break
-                        }
-                        i++
+
+                ACTION.NEXT_ACTION -> {
+                    val next = player!!.nextWindowIndex
+                    if (next >= 0 && next < mediaSource!!.size) {
+                        player!!.seekToDefaultPosition(
+                            next
+                        )
+                        currentWindow = next
+                    } else {
+                        currentMusic = musicList?.get(0)
+                        reInit()
+                        startPlayer()
+//                        pausePlayer()
                     }
                 }
                 ACTION.STOP_ACTION -> stopAction()
@@ -251,9 +174,7 @@ class ExoPlayerService : Service(), Player.EventListener,
 
 
     private fun stopAction() {
-        playerNotificationManager?.setPlayer(null)
         releasePlayer()
-        trackModelsQueue!!.clear()
         stopForeground(true)
         closeNotification()
         stopSelf()
@@ -268,9 +189,8 @@ class ExoPlayerService : Service(), Player.EventListener,
         }
     }
 
-    private fun showCurrentTrackNotification(): Music? {
-        val current = currentPlayingTrack
-        if (current == null) {
+    private fun showCurrentTrackNotification(music: Music?): Music? {
+        if (music == null) {
             closeNotification()
         } else {
             val pendingIntent = PendingIntent.getActivity(
@@ -282,8 +202,8 @@ class ExoPlayerService : Service(), Player.EventListener,
             val notificationBuilder =
                 NotificationCompat.Builder(applicationContext)
                     .setSmallIcon(R.mipmap.ic_launcher_round)
-                    .setContentTitle(if (TextUtils.isEmpty(current.title)) current.artist else current.title)
-                    .setContentText(current.artist)
+                    .setContentTitle(if (TextUtils.isEmpty(music.title)) music.artist else music.title)
+                    .setContentText(music.artist)
                     .setContentIntent(pendingIntent)
                     .setOngoing(true)
                     .setStyle(
@@ -366,37 +286,17 @@ class ExoPlayerService : Service(), Player.EventListener,
                 notificationBuilder.build()
             )
         }
-        return current
+        return music
     }
 
     private fun releasePlayer() {
         if (player != null) {
             playbackPosition = player!!.currentPosition
             currentWindow = player!!.currentWindowIndex
-            playWhenReady = player!!.playWhenReady
             player!!.stop()
             player!!.release()
             player = null
         }
-    }
-
-    private fun sendBroadcastMusicReady(trackModel: Music?) {
-        if (trackModel == null) {
-            currentTrackId = ""
-            LocalBroadcastManager.getInstance(this)
-                .sendBroadcast(Intent(ACTION.ACTION_BROADRCAST_TRACK))
-        } else {
-            currentTrackId = trackModel.id.toString()
-            val intent = Intent(ACTION.ACTION_BROADRCAST_TRACK)
-            intent.putExtra(TAG, trackModel as Parcelable?)
-            LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
-        }
-    }
-
-    private fun sendBroadcast_stateIdle() {
-        showCurrentTrackNotification()
-        val intent = Intent(ACTION.ACTION_CALLBACK_STATE_IDLE)
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
     }
 
     override fun onBind(intent: Intent): IBinder? {
@@ -410,19 +310,6 @@ class ExoPlayerService : Service(), Player.EventListener,
     ) {
     }
 
-    override fun onTracksChanged(
-        trackGroups: TrackGroupArray,
-        trackSelections: TrackSelectionArray
-    ) {
-        broadCastCurrentTrack()
-    }
-
-    private fun broadCastCurrentTrack() {
-        sendBroadcastMusicReady(showCurrentTrackNotification())
-    }
-
-    private val currentPlayingTrack: Music?
-         get() = if (trackModelsQueue!!.size > 0) trackModelsQueue!![player!!.currentWindowIndex] else null
 
     override fun onLoadingChanged(isLoading: Boolean) {}
     override fun onPlayerStateChanged(
@@ -440,36 +327,23 @@ class ExoPlayerService : Service(), Player.EventListener,
                 pausePlayer()
             }
             Player.STATE_IDLE -> {
-                sendBroadcastMusicReady(null)
-                sendBroadcast_stateIdle()
+//                sendBroadcastMusicReady(null)
+//                sendBroadcast_stateIdle()
             }
             Player.STATE_READY -> {
+                showCurrentTrackNotification(musicList?.get(currentWindow))
             }
-            else -> {
-            }
-        }
-    }
 
-    override fun onRepeatModeChanged(repeatMode: Int) {}
-    override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {
-//        if (shuffleModeEnabled) {
-//            player.setRepeatMode(Player.REPEAT_MODE_OFF);
-//            int firstId = player.getPreviousWindowIndex();
-//            while (firstId != -C.INDEX_UNSET) {
-//                firstId = player.getPreviousWindowIndex();
-//            }
-//            playFrom(this, trackModelsQueue.get(firstId));
-//        } else
-//            player.setRepeatMode(Player.REPEAT_MODE_ALL);
-//        player.seekToDefaultPosition();
+        }
+
     }
 
     override fun onPlayerError(error: ExoPlaybackException) {
         pausePlayer()
         player!!.prepare(mediaSource!!)
         player!!.seekTo(currentWindow, playbackPosition)
-        broadCastCurrentTrack()
-        sendBroadcast_stateIdle()
+//        broadCastCurrentTrack()
+//        sendBroadcast_stateIdle()
     }
 
     override fun onPositionDiscontinuity(reason: Int) {}
@@ -477,13 +351,7 @@ class ExoPlayerService : Service(), Player.EventListener,
     override fun onSeekProcessed() {}
     interface ACTION {
         companion object {
-            const val ACTION_CALLBACK_STATE_IDLE = "action.callback.state.idle"
-            const val ACTION_BROADRCAST_TRACK = "action.track"
-            const val MAIN_ACTION = "action.main"
-            const val INIT_ACTION = "action.init"
             const val PREV_ACTION = "action.prev"
-            const val ADD_ACTION_tracksArray = "action.add.album"
-            const val ADD_ACTION_singleTrack = "action.add.track"
             const val PLAY_ACTION = "action.play"
             const val PAUSE_ACTION = "action.pause"
             const val NEXT_ACTION = "action.next"
@@ -491,8 +359,6 @@ class ExoPlayerService : Service(), Player.EventListener,
             const val START_TRACKS_ARRAY_ACTION = "action.start.tracksArray"
             const val STOP_ACTION = "action.stop"
             const val PLAY_ACTION_From = "action.play.from"
-            const val SHUFFLE_ACTION = "action.shuffle"
-            const val REMOVE_ACTION_TRACK = "action.remove.track"
         }
     }
 
@@ -502,38 +368,8 @@ class ExoPlayerService : Service(), Player.EventListener,
         }
     }
 
-    private inner class DescriptionAdapter : MediaDescriptionAdapter {
-        override fun getCurrentContentTitle(player: Player): String {
-            return if (trackModelsQueue == null || trackModelsQueue!!.size <= 0 || trackModelsQueue!![player.currentWindowIndex] == null
-            ) "" else trackModelsQueue!![player.currentWindowIndex]!!.album
-        }
-
-        override fun getCurrentContentText(player: Player): String? {
-            return if (trackModelsQueue == null || trackModelsQueue!!.size <= 0 || trackModelsQueue!![player.currentWindowIndex] == null
-            ) "" else trackModelsQueue!![player.currentWindowIndex]!!.artist
-        }
-
-        override fun getCurrentLargeIcon(
-            player: Player,
-            callback: BitmapCallback
-        ): Bitmap? {
-            return null
-        }
-
-        override fun createCurrentContentIntent(player: Player): PendingIntent? {
-            return PendingIntent.getActivity(
-                this@ExoPlayerService,
-                NOTIFICATION_ID.FOREGROUND_SERVICE,
-                Intent(this@ExoPlayerService, MainActivity::class.java),
-                PendingIntent.FLAG_UPDATE_CURRENT
-            )
-        }
-    }
-
     companion object {
         const val TAG = "PlayerService"
-        var trackModelsQueue: ArrayList<Music?>? = ArrayList()
-        var currentTrackId = ""
         var player: SimpleExoPlayer? = null
             private set
 
@@ -545,33 +381,12 @@ class ExoPlayerService : Service(), Player.EventListener,
             }
         }
 
-        fun actionBroadCastCurrentTrack(context: Context) {
-            val serviceIntent = Intent(context, ExoPlayerService::class.java)
-            serviceIntent.action = ACTION.ACTION_BROADRCAST_TRACK
-            callService(context, serviceIntent)
-        }
-
         fun generateStopIntent(context: Context?): Intent {
             val serviceIntent = Intent(context, ExoPlayerService::class.java)
             serviceIntent.action = ACTION.STOP_ACTION
             return serviceIntent
         }
 
-        fun actionStop(context: Context?) {
-            if (context == null) return
-            callService(
-                context,
-                generateStopIntent(context)
-            )
-        }
-
-        fun actionNext(context: Context?) {
-            if (context == null) return
-            callService(
-                context,
-                generateNextIntent(context)
-            )
-        }
 
         fun generateNextIntent(context: Context?): Intent {
             val nextIntent = Intent(context, ExoPlayerService::class.java)
@@ -579,13 +394,6 @@ class ExoPlayerService : Service(), Player.EventListener,
             return nextIntent
         }
 
-        fun actionPrev(context: Context?) {
-            if (context == null) return
-            callService(
-                context,
-                generatePrevIntent(context)
-            )
-        }
 
         fun generatePrevIntent(context: Context?): Intent {
             val prevIntent = Intent(context, ExoPlayerService::class.java)
@@ -601,32 +409,6 @@ class ExoPlayerService : Service(), Player.EventListener,
             callService(context, serviceIntent)
         }
 
-        fun actionRemove(context: Context?, trackModel: Music?) {
-            if (context == null || trackModel == null) return
-            val serviceIntent = Intent(context, ExoPlayerService::class.java)
-            serviceIntent.action = ACTION.REMOVE_ACTION_TRACK
-            serviceIntent.putExtra(TAG, trackModel as Parcelable?)
-            callService(context, serviceIntent)
-        }
-
-        fun actionAdd(context: Context?, trackModel: Music?) {
-            if (context == null || trackModel == null) return
-            val serviceIntent = Intent(context, ExoPlayerService::class.java)
-            serviceIntent.action = ACTION.ADD_ACTION_singleTrack
-            serviceIntent.putExtra(TAG, trackModel as Parcelable?)
-            callService(context, serviceIntent)
-        }
-
-        fun actionAdd(
-            context: Context?,
-            arr: ArrayList<Music?>?
-        ) {
-            if (context == null || arr == null) return
-            val serviceIntent = Intent(context, ExoPlayerService::class.java)
-            serviceIntent.action = ACTION.ADD_ACTION_tracksArray
-            serviceIntent.putExtra(TAG, arr)
-            callService(context, serviceIntent)
-        }
 
         fun generatePlayIntent(context: Context?): Intent {
             val playIntent = Intent(context, ExoPlayerService::class.java)
@@ -642,21 +424,18 @@ class ExoPlayerService : Service(), Player.EventListener,
 
         fun actionStart(
             context: Context?,
-            arr: ArrayList<Music>?
+            arr: ArrayList<Music>?,
+            music: Music
         ) {
             if (context == null || arr == null) return
             val serviceIntent = Intent(context, ExoPlayerService::class.java)
             serviceIntent.action = ACTION.START_TRACKS_ARRAY_ACTION
             serviceIntent.putParcelableArrayListExtra(TAG, arr)
+            serviceIntent.putExtra("music", music)
             callService(context, serviceIntent)
         }
 
-        fun actionStart(context: Context?, trackModel: Music?) {
-            if (context == null || trackModel == null) return
-            val serviceIntent = Intent(context, ExoPlayerService::class.java)
-            serviceIntent.action = ACTION.START_TRACK_ACTION
-            serviceIntent.putExtra(TAG, trackModel as Parcelable?)
-            callService(context, serviceIntent)
-        }
     }
+
+
 }

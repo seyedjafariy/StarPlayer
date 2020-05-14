@@ -47,7 +47,6 @@ class MusicListItemViewHolder(
                 obj.genre,
                 obj.address
             )
-
             onItemClick(localMusic)
         }
     }
