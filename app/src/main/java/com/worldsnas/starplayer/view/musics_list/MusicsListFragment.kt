@@ -10,14 +10,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.worldsnas.starplayer.App
 import com.worldsnas.starplayer.ConstValues
-import com.worldsnas.starplayer.R
 import com.worldsnas.starplayer.databinding.FragmentMusicsListBinding
 import com.worldsnas.starplayer.di.components.DaggerMusicListComponent
 import com.worldsnas.starplayer.di.components.MusicListComponent
@@ -28,16 +26,17 @@ import com.worldsnas.starplayer.view.ViewModelFactory
 import javax.inject.Inject
 
 
-class MusicsListFragment : Fragment(), OnClickListener {
+class MusicsListFragment : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
     private val musicListViewModel by
     viewModels<MusicListViewModel> { viewModelFactory }
-
-    //man hanoz nemidonam in chetori amal mikone
-    private val musicListAdapter = MusicsListAdapter(this)
+    private val musicListAdapter =
+        MusicsListAdapter({ music -> onItemClickListener(music) }) { favorites ->
+            onFavoriteClickListener(favorites)
+        }
 
     private var _binding: FragmentMusicsListBinding? = null
     private val binding get() = _binding!!
@@ -129,13 +128,13 @@ class MusicsListFragment : Fragment(), OnClickListener {
         }
     }
 
-    override fun onItemClickListener(music: Music) {
+    private fun onItemClickListener(music: Music) {
         val action = MusicsListFragmentDirections.actionMusicsListFragmentToPlayerFragment(music)
 
         findNavController().navigate(action)
     }
 
-    override fun onFavoriteClickListener(favoriteMusic: FavoriteMusic) {
+    private fun onFavoriteClickListener(favoriteMusic: FavoriteMusic) {
         musicListViewModel.favoritesHandler(favoriteMusic)
     }
 

@@ -12,14 +12,19 @@ import com.worldsnas.starplayer.model.MusicRepoModel
 import com.worldsnas.starplayer.model.persistent.FavoriteMusic
 
 class MusicsListAdapter(
-    private val onItemClickListener: OnClickListener
+    private var onItemClickListener: (Music) -> Unit,
+    private var onFavoriteClickListener: (FavoriteMusic) -> Unit
 ) :
     ListAdapter<MusicRepoModel, MusicListItemViewHolder>(DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MusicListItemViewHolder {
         val musicViewBinding: ItemMusicBinding =
             ItemMusicBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return MusicListItemViewHolder(musicViewBinding, onItemClickListener)
+        return MusicListItemViewHolder(
+            musicViewBinding,
+            onItemClickListener,
+            onFavoriteClickListener
+        )
     }
 
     override fun onBindViewHolder(holder: MusicListItemViewHolder, position: Int) {
@@ -30,7 +35,8 @@ class MusicsListAdapter(
 
 class MusicListItemViewHolder(
     private val mBinding: ItemMusicBinding,
-    private val onItemClickListener: OnClickListener
+    private val onItemClickListener: (Music) -> Unit,
+    private val onFavoriteClickListener: (FavoriteMusic) -> Unit
 ) :
     BaseViewHolder<MusicRepoModel>(mBinding.root) {
 
@@ -55,7 +61,7 @@ class MusicListItemViewHolder(
                 obj.address,
                 obj.isFavorite.not()
             )
-            onItemClickListener.onFavoriteClickListener(favoriteMusic)
+            onFavoriteClickListener(favoriteMusic)
         }
     }
 
@@ -71,7 +77,7 @@ class MusicListItemViewHolder(
                 obj.isFavorite
             )
 
-            onItemClickListener.onItemClickListener(localMusic)
+            onItemClickListener(localMusic)
         }
     }
 }
