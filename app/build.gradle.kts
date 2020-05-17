@@ -48,8 +48,13 @@ android {
 dependencies {
     implementation(Support.supportLegacy)
     testImplementation(Testing.junit)
+    testImplementation(Testing.mockito)
+    testImplementation(Testing.mockServer)
     androidTestImplementation(Testing.supportJunitExt)
     androidTestImplementation(Testing.espressoCore)
+    androidTestImplementation(Testing.coreTesting)
+
+    implementation(ArchComponent.lifecycleExtension)
 
     implementation(Kotlin.kotlinStd7)
     implementation(Support.compat)

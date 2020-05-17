@@ -17,6 +17,10 @@ object Versions {
     const val mockkVersion = "1.9.3"
     const val fakeItVersion = "v0.5"
 
+    const val coreTestingVersion = "2.0.1"
+    const val mockitoVersion = "2.1.0"
+    const val mockServerVersion = "3.12.0"
+
     const val kotlinVersion = "1.3.61"
     const val coroutinesVersion = "1.3.3"
     const val detektPluginVersion = "1.0.0-RC16"
@@ -113,6 +117,9 @@ object Testing {
     const val mockkUnit = "io.mockk:mockk:${Versions.mockkVersion}"
     const val mockkAndroid = "io.mockk:mockk-android:${Versions.mockkVersion}"
 
+    const val mockito= "com.nhaarman.mockitokotlin2:mockito-kotlin:${Versions.mockitoVersion}"
+    const val mockServer= "com.squareup.okhttp3:mockwebserver:${Versions.mockServerVersion}"
+
     const val coroutinesTest =
         "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.coroutinesVersion}"
 
@@ -121,6 +128,8 @@ object Testing {
     const val supportTestRule = "androidx.test:rules:${Versions.supportTestVersion}"
     const val supportJunitExt = "androidx.test.ext:junit:${Versions.supportCoreVersion}"
     const val supportCore = "androidx.test:core:${Versions.supportTestVersion}"
+
+    const val coreTesting = "androidx.arch.core:core-testing:${Versions.coreTestingVersion}"
 
     const val espressoCore = "androidx.test.espresso:espresso-core:${Versions.espressoVersion}"
     const val espressoIntents =
