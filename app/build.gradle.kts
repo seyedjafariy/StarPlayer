@@ -50,6 +50,13 @@ dependencies {
     testImplementation(Testing.junit)
     testImplementation(Testing.mockito)
     testImplementation(Testing.mockServer)
+    testImplementation(Testing.coreTesting)
+
+    testImplementation(Kotlin.coroutinesAndroid)
+    testImplementation(Testing.coroutinesTest)
+    androidTestImplementation(Kotlin.coroutinesAndroid)
+    androidTestImplementation(Testing.coroutinesTest)
+
     androidTestImplementation(Testing.supportJunitExt)
     androidTestImplementation(Testing.espressoCore)
     androidTestImplementation(Testing.coreTesting)

@@ -117,8 +117,8 @@ object Testing {
     const val mockkUnit = "io.mockk:mockk:${Versions.mockkVersion}"
     const val mockkAndroid = "io.mockk:mockk-android:${Versions.mockkVersion}"
 
-    const val mockito= "com.nhaarman.mockitokotlin2:mockito-kotlin:${Versions.mockitoVersion}"
-    const val mockServer= "com.squareup.okhttp3:mockwebserver:${Versions.mockServerVersion}"
+    const val mockito = "com.nhaarman.mockitokotlin2:mockito-kotlin:${Versions.mockitoVersion}"
+    const val mockServer = "com.squareup.okhttp3:mockwebserver:${Versions.mockServerVersion}"
 
     const val coroutinesTest =
         "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.coroutinesVersion}"
@@ -130,6 +130,7 @@ object Testing {
     const val supportCore = "androidx.test:core:${Versions.supportTestVersion}"
 
     const val coreTesting = "androidx.arch.core:core-testing:${Versions.coreTestingVersion}"
+
 
     const val espressoCore = "androidx.test.espresso:espresso-core:${Versions.espressoVersion}"
     const val espressoIntents =
