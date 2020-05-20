@@ -305,14 +305,16 @@ class ExoPlayerService : Service(), Player.EventListener {
             Player.STATE_BUFFERING -> {
             }
             Player.STATE_ENDED -> {
-                player!!.seekTo(
-                    player!!.currentWindowIndex,
+                player.seekTo(
+                    player.currentWindowIndex,
                     0
                 )
                 pausePlayer()
             }
 
             Player.STATE_READY -> {
+               if (!playWhenReady)
+                   showCurrentTrackNotification(musicList?.get(player.currentWindowIndex))
             }
 
         }
@@ -329,8 +331,8 @@ class ExoPlayerService : Service(), Player.EventListener {
 
     override fun onPlayerError(error: ExoPlaybackException) {
         pausePlayer()
-        player!!.prepare(mediaSource!!)
-        player!!.seekTo(currentWindow, playbackPosition)
+        player.prepare(mediaSource!!)
+        player.seekTo(currentWindow, playbackPosition)
 //        broadCastCurrentTrack()
 //        sendBroadcast_stateIdle()
     }
