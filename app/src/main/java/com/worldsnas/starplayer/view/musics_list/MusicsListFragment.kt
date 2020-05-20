@@ -144,7 +144,7 @@ class MusicsListFragment : Fragment() {
 //        val action = MusicsListFragmentDirections.actionMusicsListFragmentToPlayerFragment(music)
 //
 //        findNavController().navigate(action)
-        ExoPlayerService.actionStart(context, musicList,music)
+        ExoPlayerService.actionStart(context, musicList,music.id)
     }
 
 
