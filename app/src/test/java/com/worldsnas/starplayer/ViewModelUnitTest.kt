@@ -17,6 +17,7 @@ import org.junit.rules.TestRule
 
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
@@ -33,7 +34,7 @@ import org.mockito.junit.MockitoJUnitRunner
 class ViewModelUnitTest {
 
     @get:Rule
-    val testInstantTaskExecutorRule: TestRule = InstantTaskExecutorRule()
+    val testInstantTaskExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
     val testCoroutineRule = TestCoroutineRule()
