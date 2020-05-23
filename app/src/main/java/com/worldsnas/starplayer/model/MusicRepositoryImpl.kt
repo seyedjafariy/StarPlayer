@@ -10,7 +10,8 @@ import javax.inject.Inject
 class MusicRepositoryImpl @Inject constructor(
     private val localMusicProvider: LocalMusicProvider,
     private val webServiceApi: WebServiceApi,
-    private val favoriteMusicDao: FavoriteMusicDao
+    private val favoriteMusicDao: FavoriteMusicDao,
+    private val musicMapper: MusicMapper
 ) : MusicRepository {
 
     override suspend fun getApiData(page: Int, count: Int): List<MusicRepoModel> =
@@ -19,17 +20,23 @@ class MusicRepositoryImpl @Inject constructor(
             val apiMusicList = webServiceApi.getMusics(page, count)
 
             apiMusicList.body()?.map {
+                musicMapper.mapToModel(it)
 
-                MusicRepoModel(
-                    it.id.toInt(),
-                    it.name,
-                    it.artist,
-                    "album",
-                    "genre",
-                    it.musicLink,
-                    false
-                )
             }!!
+        }
+
+    suspend fun getApiDataNew(page: Int, count: Int): List<MusicRepoModel> =
+        withContext(Dispatchers.IO) {
+
+            val apiMusicList = webServiceApi.getMusics(page, count)
+            val favList = getLocalData()
+            val result = apiMusicList.body()
+                ?.map {
+                    musicMapper.mapToModel(it)
+                }?.filter {
+                    favList.contains(it)
+                }
+            return@withContext result!!
         }
 
 
@@ -52,4 +59,5 @@ class MusicRepositoryImpl @Inject constructor(
         withContext(Dispatchers.IO) {
             favoriteMusicDao.update(favoriteMusic)
         }
+
 }
