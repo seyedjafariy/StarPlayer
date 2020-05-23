@@ -113,36 +113,26 @@ object Testing {
     //testing
     const val junit = "junit:junit:${Versions.jUnitVersion}"
     const val assertJ = "org.assertj:assertj-core:${Versions.assertJVersion}"
-
     const val mockkUnit = "io.mockk:mockk:${Versions.mockkVersion}"
     const val mockkAndroid = "io.mockk:mockk-android:${Versions.mockkVersion}"
-
-    const val mockito = "com.nhaarman.mockitokotlin2:mockito-kotlin:${Versions.mockitoVersion}"
     const val mockServer = "com.squareup.okhttp3:mockwebserver:${Versions.mockServerVersion}"
-
     const val coroutinesTest =
         "org.jetbrains.kotlinx:kotlinx-coroutines-test:${Versions.coroutinesVersion}"
-
     const val supportTestRunner = "androidx.test:runner:${Versions.supportTestVersion}"
     const val supportTestCore = "androidx.test:core:${Versions.supportTestVersion}"
     const val supportTestRule = "androidx.test:rules:${Versions.supportTestVersion}"
     const val supportJunitExt = "androidx.test.ext:junit:${Versions.supportCoreVersion}"
     const val supportCore = "androidx.test:core:${Versions.supportTestVersion}"
-
     const val coreTesting = "androidx.arch.core:core-testing:${Versions.coreTestingVersion}"
-
-
     const val espressoCore = "androidx.test.espresso:espresso-core:${Versions.espressoVersion}"
     const val espressoIntents =
         "androidx.test.espresso:espresso-intents:${Versions.espressoVersion}"
     const val espressoContrib =
         "androidx.test.espresso:espresso-contrib:${Versions.espressoVersion}"
-
     const val jsonTest = "org.json:json:${Versions.jsonTestVersion}"
-
     const val fakeIt = "com.github.moove-it:fakeit:${Versions.fakeItVersion}"
-
     const val robolectric = "org.robolectric:robolectric:4.2"
+    const val mockito = "org.mockito:mockito-core:3.3.3"
 }
 
 object Kotlin {

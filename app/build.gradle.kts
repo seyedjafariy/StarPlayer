@@ -48,9 +48,9 @@ android {
 dependencies {
     implementation(Support.supportLegacy)
     testImplementation(Testing.junit)
-    testImplementation(Testing.mockito)
     testImplementation(Testing.mockServer)
     testImplementation(Testing.coreTesting)
+    testImplementation(Testing.mockito)
 
     testImplementation(Kotlin.coroutinesAndroid)
     testImplementation(Testing.coroutinesTest)
