@@ -34,8 +34,8 @@ class MusicsListFragment : Fragment() {
     private val musicListViewModel by
     viewModels<MusicListViewModel> { viewModelFactory }
     private val musicListAdapter =
-        MusicsListAdapter({ music -> onItemClickListener(music) }) { favorites ->
-            onFavoriteClickListener(favorites)
+        MusicsListAdapter({ music -> onItemClickListener(music) }) { musicRepoModel ->
+            onFavoriteClickListener(musicRepoModel)
         }
 
     private var _binding: FragmentMusicsListBinding? = null
@@ -134,8 +134,8 @@ class MusicsListFragment : Fragment() {
         findNavController().navigate(action)
     }
 
-    private fun onFavoriteClickListener(favoriteMusic: FavoriteMusic) {
-        musicListViewModel.favoritesHandler(favoriteMusic)
+    private fun onFavoriteClickListener(musicRepoModel: MusicRepoModel) {
+        musicListViewModel.favoritesHandler(musicRepoModel)
     }
 
 }
