@@ -11,6 +11,4 @@ data class FavoriteMusic(
     @ColumnInfo(name = "artist")val artist: String,
     @ColumnInfo(name = "album")val album: String,
     @ColumnInfo(name = "genre")val genre: String,
-    @ColumnInfo(name = "address")val address: String,
-    @ColumnInfo(name = "isFavorite")val isFavorite: Boolean
-)
+    @ColumnInfo(name = "address")val address: String)
