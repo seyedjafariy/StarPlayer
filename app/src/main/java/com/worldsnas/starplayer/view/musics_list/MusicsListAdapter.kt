@@ -9,11 +9,10 @@ import com.worldsnas.starplayer.core.BaseViewHolder
 import com.worldsnas.starplayer.databinding.ItemMusicBinding
 import com.worldsnas.starplayer.model.Music
 import com.worldsnas.starplayer.model.MusicRepoModel
-import com.worldsnas.starplayer.model.persistent.FavoriteMusic
 
 class MusicsListAdapter(
     private var onItemClickListener: (Music) -> Unit,
-    private var onFavoriteClickListener: (FavoriteMusic) -> Unit
+    private var onFavoriteClickListener: (MusicRepoModel) -> Unit
 ) :
     ListAdapter<MusicRepoModel, MusicListItemViewHolder>(DiffCallback) {
 
@@ -36,7 +35,7 @@ class MusicsListAdapter(
 class MusicListItemViewHolder(
     private val mBinding: ItemMusicBinding,
     private val onItemClickListener: (Music) -> Unit,
-    private val onFavoriteClickListener: (FavoriteMusic) -> Unit
+    private val onFavoriteClickListener: (MusicRepoModel) -> Unit
 ) :
     BaseViewHolder<MusicRepoModel>(mBinding.root) {
 
@@ -51,8 +50,9 @@ class MusicListItemViewHolder(
         if (obj.isFavorite) mBinding.imgMusicFavorite.setImageResource(R.color.colorAccent)
 
         mBinding.imgMusicFavorite.setOnClickListener {
+            if (obj.isFavorite) mBinding.imgMusicFavorite.setImageResource(R.color.colorAccent)
 
-            val favoriteMusic = FavoriteMusic(
+            val favoriteMusic = MusicRepoModel(
                 obj.id,
                 obj.title,
                 obj.artist,
