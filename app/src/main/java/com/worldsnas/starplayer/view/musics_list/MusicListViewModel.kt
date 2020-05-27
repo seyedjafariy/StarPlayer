@@ -15,33 +15,24 @@ class MusicListViewModel @Inject constructor(
     private val musicRepository: MusicRepository
 ) :
     ViewModel() {
+
     init {
-        saveMusic()
+        getLocalMusic()
     }
 
     private val postMusicList = MutableLiveData<List<MusicRepoModel>>()
 
-    private fun getLocalMusic() {
+    private fun getLocalMusic() =
         viewModelScope.launch {
             val musicsList = musicRepository.getLocalData()
             postMusicList.postValue(musicsList)
         }
-    }
 
-    fun postMusic(): LiveData<List<MusicRepoModel>> {
-        return postMusicList
-    }
+    fun postMusic(): LiveData<List<MusicRepoModel>> =
+        postMusicList
 
-    private fun saveMusic() {
+    fun favoritesHandler(musicRepoModel: MusicRepoModel) =
         viewModelScope.launch {
-            musicRepository.saveToDatabase()
+            musicRepository.favoritesHandler(musicRepoModel)
         }
-        getLocalMusic()
-
-    }
-
-    fun favoritesHandler(favoriteMusic: FavoriteMusic) {
-
-        viewModelScope.launch { musicRepository.favoriteItemHandler(favoriteMusic) }
-    }
 }
