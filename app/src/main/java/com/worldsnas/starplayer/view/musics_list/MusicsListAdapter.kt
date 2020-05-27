@@ -48,20 +48,14 @@ class MusicListItemViewHolder(
 
     private fun favoriteStateHandler(obj: MusicRepoModel) {
         if (obj.isFavorite) mBinding.imgMusicFavorite.setImageResource(R.color.colorAccent)
+        else mBinding.imgMusicFavorite.setImageResource(R.color.colorPrimary)
+        mBinding.imgMusicFavorite.setOnClickListener() {
 
-        mBinding.imgMusicFavorite.setOnClickListener {
+            obj.isFavorite = obj.isFavorite.not()
             if (obj.isFavorite) mBinding.imgMusicFavorite.setImageResource(R.color.colorAccent)
+            else mBinding.imgMusicFavorite.setImageResource(R.color.colorPrimary)
 
-            val favoriteMusic = MusicRepoModel(
-                obj.id,
-                obj.title,
-                obj.artist,
-                obj.album,
-                obj.genre,
-                obj.address,
-                obj.isFavorite.not()
-            )
-            onFavoriteClickListener(favoriteMusic)
+            onFavoriteClickListener(obj)
         }
     }
 
