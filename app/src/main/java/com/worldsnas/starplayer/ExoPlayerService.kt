@@ -15,7 +15,7 @@ import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.*
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
-import com.worldsnas.starplayer.model.Music
+import com.worldsnas.starplayer.model.MusicRepoModel
 import java.util.*
 
 class ExoPlayerService : Service(), Player.EventListener {
@@ -23,19 +23,12 @@ class ExoPlayerService : Service(), Player.EventListener {
 
     lateinit var mediaSource: ConcatenatingMediaSource
 
+
     lateinit var player: SimpleExoPlayer
 
-    private var currentWindow = 0
-    private var playbackPosition: Long = 0
-    private var musicList: ArrayList<Music?>? = null
-    private var currentMusicId: Int = 0
-
-
-    private fun reInit() {
-        playbackPosition = 0
-        prepareCurrentWindow(musicList, currentMusicId)
-        initializePlayer()
-    }
+    private var playbackPosition: Long = defaultValue.toLong()
+    private lateinit var musicList: ArrayList<MusicRepoModel>
+    private var currentMusicPosition: Int = defaultValue
 
 
     override fun onDestroy() {
@@ -44,20 +37,20 @@ class ExoPlayerService : Service(), Player.EventListener {
     }
 
 
-    private fun play(trackModel: Music?) {
-        val trackModels = ArrayList<Music?>()
+    private fun play(trackModel: MusicRepoModel) {
+        val trackModels = ArrayList<MusicRepoModel>()
         trackModels.add(trackModel)
         play(trackModels)
     }
 
-    private fun play(trackModels: ArrayList<Music?>?) {
-        reInit()
-        if (trackModels != null) {
+    private fun play(trackModels: ArrayList<MusicRepoModel>) {
+        playbackPosition = defaultValue.toLong()
+        if (trackModels.size > 0) {
             val mediaSources =
                 arrayOfNulls<MediaSource>(trackModels.size)
             for (i in trackModels.indices) {
                 mediaSources[i] =
-                    buildMediaSource(Uri.parse(trackModels[i]?.address))
+                    buildMediaSource(Uri.parse(trackModels[i].address))
             }
             mediaSource = ConcatenatingMediaSource(*mediaSources)
             player.prepare(mediaSource)
@@ -65,27 +58,20 @@ class ExoPlayerService : Service(), Player.EventListener {
         }
     }
 
-    private fun prepareCurrentWindow(trackModels: ArrayList<Music?>?, currentMusicId: Int) {
 
-        if (trackModels != null && trackModels.size > 0)
-            for (i in trackModels.indices) {
-                if (trackModels[i]?.id == currentMusicId)
-                    currentWindow = i
-            }
-    }
 
 
     private fun pausePlayer() {
         playbackPosition = player.currentPosition
-        currentWindow = player.currentWindowIndex
+        currentMusicPosition = player.currentWindowIndex
         player.playWhenReady = false
-        showCurrentTrackNotification(musicList?.get(currentWindow))
+        showCurrentTrackNotification(musicList[player.currentWindowIndex])
     }
 
     private fun startPlayer() {
-        player.seekTo(currentWindow, playbackPosition)
+        player.seekTo(currentMusicPosition, playbackPosition)
         player.playWhenReady = true
-        showCurrentTrackNotification(musicList?.get(currentWindow))
+        showCurrentTrackNotification(musicList[player.currentWindowIndex])
     }
 
     private fun initializePlayer() {
@@ -97,71 +83,72 @@ class ExoPlayerService : Service(), Player.EventListener {
                 .build(), true
         )
 
-        player.seekTo(currentWindow, playbackPosition)
-        player.playWhenReady = true
+//        player.seekTo(currentWindow, playbackPosition)
+//        player.playWhenReady = true
         player.addListener(this)
 
     }
 
-    private fun buildMediaSource(uri: Uri?): MediaSource? {
+    private fun buildMediaSource(uri: Uri): MediaSource {
         val userAgent = "star_player"
         return ProgressiveMediaSource.Factory(DefaultHttpDataSourceFactory(userAgent))
             .createMediaSource(uri)
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (intent != null) {
-//            initializePlayer()
-            if (intent.action != null) when (intent.action) {
-                ACTION.PLAY_ACTION -> {
-                    if (player.currentPosition == player.contentPosition && player.nextWindowIndex == C.INDEX_UNSET) {
-                        playbackPosition = 0
-                    }
-                    startPlayer()
-                }
-                ACTION.PAUSE_ACTION -> pausePlayer()
-                ACTION.START_TRACKS_ARRAY_ACTION -> {
-                    musicList = intent.getParcelableArrayListExtra(
-                        TAG
-                    )
-                    currentMusicId = intent.getIntExtra("currentMusicId", 0)
-                    play(
-                        musicList
-                    )
-                }
-                ACTION.START_TRACK_ACTION -> play(
-                    intent.getParcelableExtra<Music>(
-                        TAG
-                    )
-                )
+    override fun onCreate() {
+        super.onCreate()
+        initializePlayer()
+    }
 
-                ACTION.PREV_ACTION -> {
-                    val prev = player.previousWindowIndex
-                    if (prev >= 0 && prev <= mediaSource.size) {
-                        currentWindow = prev
-                    } else {
-                        currentMusicId = 0
-                        currentWindow = currentMusicId
-                        playbackPosition = 0
-                    }
-                    startPlayer()
-                }
+    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
 
-                ACTION.NEXT_ACTION -> {
-                    val next = player.nextWindowIndex
-                    if (next >= 0 && next < mediaSource.size) {
-                        currentWindow = next
-                    } else {
-                        currentMusicId = 0
-                        currentWindow = currentMusicId
-                        playbackPosition = 0
-
-                    }
-                    startPlayer()
+        when (intent.action) {
+            PLAY_ACTION -> {
+                if (player.currentPosition == player.contentPosition && player.nextWindowIndex == C.INDEX_UNSET) {
+                    playbackPosition = defaultValue.toLong()
                 }
-                ACTION.STOP_ACTION -> stopAction()
+                startPlayer()
             }
+            PAUSE_ACTION -> pausePlayer()
+            START_TRACKS_ARRAY_ACTION -> {
+                musicList = intent.getParcelableArrayListExtra(
+                    TAG
+                )!!
+                currentMusicPosition = intent.getIntExtra(CURRENT_MUSIC_POSITION_KEY, defaultValue)
+                play(
+                    musicList
+                )
+            }
+            START_TRACK_ACTION -> play(
+                intent.getParcelableExtra<MusicRepoModel>(
+                    TAG
+                )!!
+            )
+
+            PREV_ACTION -> {
+                val prev = player.previousWindowIndex
+                if (prev >= 0 && prev <= mediaSource.size) {
+                    currentMusicPosition = prev
+                } else {
+                    currentMusicPosition = defaultValue
+                    playbackPosition = defaultValue.toLong()
+                }
+                startPlayer()
+            }
+
+            NEXT_ACTION -> {
+                val next = player.nextWindowIndex
+                if (next >= 0 && next < mediaSource.size) {
+                    currentMusicPosition = next
+                } else {
+                    currentMusicPosition = defaultValue
+                    playbackPosition = defaultValue.toLong()
+                }
+                startPlayer()
+            }
+            STOP_ACTION -> stopAction()
         }
+
         return START_STICKY
     }
 
@@ -176,120 +163,113 @@ class ExoPlayerService : Service(), Player.EventListener {
     private fun closeNotification() {
         try {
             (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).cancel(
-                NOTIFICATION_ID.FOREGROUND_SERVICE
+                FOREGROUND_SERVICE_NOTIFICATION_ID
             )
         } catch (n: NullPointerException) {
         }
     }
 
-    private fun showCurrentTrackNotification(music: Music?): Music? {
-        if (music == null) {
-            closeNotification()
+    private fun showCurrentTrackNotification(music: MusicRepoModel): MusicRepoModel {
+
+        val pendingIntent = PendingIntent.getActivity(
+            this@ExoPlayerService,
+            FOREGROUND_SERVICE_NOTIFICATION_ID,
+            Intent(this@ExoPlayerService, MainActivity::class.java),
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        val notificationBuilder =
+            NotificationCompat.Builder(applicationContext)
+                .setSmallIcon(R.mipmap.ic_launcher_round)
+                .setContentTitle(if (TextUtils.isEmpty(music.title)) music.artist else music.title)
+                .setContentText(music.artist)
+                .setContentIntent(pendingIntent)
+                .setOngoing(true)
+                .setStyle(
+                    androidx.media.app.NotificationCompat.MediaStyle()
+                        .setShowActionsInCompactView(0, 1, 2, 3)
+                )
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setPriority(Notification.PRIORITY_MAX)
+                .setWhen(0)
+        val pendingIntentPrev = PendingIntent.getService(
+            this,
+            FOREGROUND_SERVICE_NOTIFICATION_ID,
+            generateIntent(this, PREV_ACTION),
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        notificationBuilder.addAction(
+            NotificationCompat.Action.Builder(
+                R.drawable.exo_notification_previous,
+                resources.getString(R.string.previous),
+                pendingIntentPrev
+            ).build()
+        )
+        if (player.playWhenReady) {
+            val pendingIntentPause = PendingIntent.getService(
+                this,
+                FOREGROUND_SERVICE_NOTIFICATION_ID,
+                generateIntent(this, PAUSE_ACTION),
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
+            notificationBuilder.addAction(
+                NotificationCompat.Action.Builder(
+                    R.drawable.exo_notification_pause,
+                    resources.getString(R.string.pause),
+                    pendingIntentPause
+                ).build()
+            )
         } else {
-            val pendingIntent = PendingIntent.getActivity(
-                this@ExoPlayerService,
-                NOTIFICATION_ID.FOREGROUND_SERVICE,
-                Intent(this@ExoPlayerService, MainActivity::class.java),
-                PendingIntent.FLAG_UPDATE_CURRENT
-            )
-            val notificationBuilder =
-                NotificationCompat.Builder(applicationContext)
-                    .setSmallIcon(R.mipmap.ic_launcher_round)
-                    .setContentTitle(if (TextUtils.isEmpty(music.title)) music.artist else music.title)
-                    .setContentText(music.artist)
-                    .setContentIntent(pendingIntent)
-                    .setOngoing(true)
-                    .setStyle(
-                        androidx.media.app.NotificationCompat.MediaStyle()
-                            .setShowActionsInCompactView(0, 1, 2, 3)
-                    )
-                    .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                    .setPriority(Notification.PRIORITY_MAX)
-                    .setWhen(0)
-            val pendingIntentPrev = PendingIntent.getService(
+            val pendingIntentPlay = PendingIntent.getService(
                 this,
-                NOTIFICATION_ID.FOREGROUND_SERVICE,
-                generatePrevIntent(this),
+                FOREGROUND_SERVICE_NOTIFICATION_ID,
+                generateIntent(this, PLAY_ACTION),
                 PendingIntent.FLAG_UPDATE_CURRENT
             )
             notificationBuilder.addAction(
                 NotificationCompat.Action.Builder(
-                    R.drawable.exo_notification_previous,
-                    "قبلی",
-                    pendingIntentPrev
+                    R.drawable.exo_notification_play,
+                    resources.getString(R.string.play),
+                    pendingIntentPlay
                 ).build()
-            )
-            if (player.playWhenReady) {
-                val pendingIntentPause = PendingIntent.getService(
-                    this,
-                    NOTIFICATION_ID.FOREGROUND_SERVICE,
-                    generatePauseIntent(this),
-                    PendingIntent.FLAG_UPDATE_CURRENT
-                )
-                notificationBuilder.addAction(
-                    NotificationCompat.Action.Builder(
-                        R.drawable.exo_notification_pause,
-                        "توقف",
-                        pendingIntentPause
-                    ).build()
-                )
-            } else {
-                val pendingIntentPlay = PendingIntent.getService(
-                    this,
-                    NOTIFICATION_ID.FOREGROUND_SERVICE,
-                    generatePlayIntent(this),
-                    PendingIntent.FLAG_UPDATE_CURRENT
-                )
-                notificationBuilder.addAction(
-                    NotificationCompat.Action.Builder(
-                        R.drawable.exo_notification_play,
-                        "اجرا",
-                        pendingIntentPlay
-                    ).build()
-                )
-            }
-            val pendingIntentNext = PendingIntent.getService(
-                this,
-                NOTIFICATION_ID.FOREGROUND_SERVICE,
-                generateNextIntent(this),
-                PendingIntent.FLAG_UPDATE_CURRENT
-            )
-            notificationBuilder.addAction(
-                NotificationCompat.Action.Builder(
-                    R.drawable.exo_notification_next,
-                    "بعدی",
-                    pendingIntentNext
-                ).build()
-            )
-            val pendingIntentStop = PendingIntent.getService(
-                this,
-                NOTIFICATION_ID.FOREGROUND_SERVICE,
-                generateStopIntent(this),
-                PendingIntent.FLAG_UPDATE_CURRENT
-            )
-            notificationBuilder.addAction(
-                NotificationCompat.Action.Builder(
-                    R.drawable.exo_notification_stop,
-                    "بستن",
-                    pendingIntentStop
-                ).build()
-            )
-            startForeground(
-                NOTIFICATION_ID.FOREGROUND_SERVICE,
-                notificationBuilder.build()
             )
         }
+        val pendingIntentNext = PendingIntent.getService(
+            this,
+            FOREGROUND_SERVICE_NOTIFICATION_ID,
+            generateIntent(this, NEXT_ACTION),
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        notificationBuilder.addAction(
+            NotificationCompat.Action.Builder(
+                R.drawable.exo_notification_next,
+                resources.getString(R.string.next),
+                pendingIntentNext
+            ).build()
+        )
+        val pendingIntentStop = PendingIntent.getService(
+            this,
+            FOREGROUND_SERVICE_NOTIFICATION_ID,
+            generateIntent(this, STOP_ACTION),
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+        notificationBuilder.addAction(
+            NotificationCompat.Action.Builder(
+                R.drawable.exo_notification_stop,
+                resources.getString(R.string.stop),
+                pendingIntentStop
+            ).build()
+        )
+        startForeground(
+            FOREGROUND_SERVICE_NOTIFICATION_ID,
+            notificationBuilder.build()
+        )
+
         return music
     }
 
     private fun releasePlayer() {
-//        if (player != null) {
-        playbackPosition = player.currentPosition
-        currentWindow = player.currentWindowIndex
         player.stop()
         player.release()
-//            player = null
-//        }
     }
 
     override fun onBind(intent: Intent): IBinder? {
@@ -313,8 +293,10 @@ class ExoPlayerService : Service(), Player.EventListener {
             }
 
             Player.STATE_READY -> {
-               if (!playWhenReady)
-                   showCurrentTrackNotification(musicList?.get(player.currentWindowIndex))
+                if (!playWhenReady)
+                    showCurrentTrackNotification(musicList[player.currentWindowIndex])
+            }
+            Player.STATE_IDLE -> {
             }
 
         }
@@ -326,15 +308,14 @@ class ExoPlayerService : Service(), Player.EventListener {
         trackSelections: TrackSelectionArray
     ) {
         super.onTracksChanged(trackGroups, trackSelections)
-        showCurrentTrackNotification(musicList?.get(player.currentWindowIndex))
+        showCurrentTrackNotification(musicList[player.currentWindowIndex])
     }
 
     override fun onPlayerError(error: ExoPlaybackException) {
         pausePlayer()
-        player.prepare(mediaSource!!)
-        player.seekTo(currentWindow, playbackPosition)
-//        broadCastCurrentTrack()
-//        sendBroadcast_stateIdle()
+        player.prepare(mediaSource)
+        player.seekTo(player.currentWindowIndex, playbackPosition)
+
     }
 
     override fun onPositionDiscontinuity(reason: Int) {
@@ -343,71 +324,41 @@ class ExoPlayerService : Service(), Player.EventListener {
 
     override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters) {}
     override fun onSeekProcessed() {}
-    interface ACTION {
-        companion object {
-            const val PREV_ACTION = "action.prev"
-            const val PLAY_ACTION = "action.play"
-            const val PAUSE_ACTION = "action.pause"
-            const val NEXT_ACTION = "action.next"
-            const val START_TRACK_ACTION = "action.start.track"
-            const val START_TRACKS_ARRAY_ACTION = "action.start.tracksArray"
-            const val STOP_ACTION = "action.stop"
+
+
+    private fun generateIntent(context: Context, action: String) =
+        Intent(context, ExoPlayerService::class.java).apply {
+            this.action = action
         }
-    }
 
-    interface NOTIFICATION_ID {
-        companion object {
-            const val FOREGROUND_SERVICE = 101
-        }
-    }
-
-    private fun generateStopIntent(context: Context?): Intent {
-        val serviceIntent = Intent(context, ExoPlayerService::class.java)
-        serviceIntent.action = ACTION.STOP_ACTION
-        return serviceIntent
-    }
-
-
-    private fun generateNextIntent(context: Context?): Intent {
-        val nextIntent = Intent(context, ExoPlayerService::class.java)
-        nextIntent.action = ACTION.NEXT_ACTION
-        return nextIntent
-    }
-
-
-    private fun generatePrevIntent(context: Context?): Intent {
-        val prevIntent = Intent(context, ExoPlayerService::class.java)
-        prevIntent.action = ACTION.PREV_ACTION
-        return prevIntent
-    }
-
-
-    private fun generatePlayIntent(context: Context?): Intent {
-        val playIntent = Intent(context, ExoPlayerService::class.java)
-        playIntent.action = ACTION.PLAY_ACTION
-        return playIntent
-    }
-
-    private fun generatePauseIntent(context: Context?): Intent {
-        val pauseIntent = Intent(context, ExoPlayerService::class.java)
-        pauseIntent.action = ACTION.PAUSE_ACTION
-        return pauseIntent
-    }
 
     companion object {
-        const val TAG = "PlayerService"
+        private const val TAG = "PlayerService"
+        private const val PREV_ACTION = "action.prev"
+        private const val PLAY_ACTION = "action.play"
+        private const val PAUSE_ACTION = "action.pause"
+        private const val NEXT_ACTION = "action.next"
+        private const val START_TRACK_ACTION = "action.start.track"
+        private const val START_TRACKS_ARRAY_ACTION = "action.start.tracksArray"
+        private const val STOP_ACTION = "action.stop"
+        private const val CURRENT_MUSIC_POSITION_KEY = "currentMusicPosition"
+        private const val FOREGROUND_SERVICE_NOTIFICATION_ID = 101
+        private const val defaultValue = 0
+
 
         fun actionStart(
             context: Context?,
-            arr: ArrayList<Music>?,
-            currentMusicId: Int
+            arr: ArrayList<MusicRepoModel>,
+            currentMusicPosition: Int
         ) {
-            if (context == null || arr == null) return
-            val serviceIntent = Intent(context, ExoPlayerService::class.java)
-            serviceIntent.action = ACTION.START_TRACKS_ARRAY_ACTION
-            serviceIntent.putParcelableArrayListExtra(TAG, arr)
-            serviceIntent.putExtra("currentMusicId", currentMusicId)
-            callService(context, serviceIntent)
+            if (context == null) return
+
+            callService(context, Intent(context, ExoPlayerService::class.java).apply {
+                action = START_TRACKS_ARRAY_ACTION
+                putParcelableArrayListExtra(TAG, arr)
+                putExtra(CURRENT_MUSIC_POSITION_KEY, currentMusicPosition)
+            })
+
         }
 
         private fun callService(context: Context, intent: Intent) {

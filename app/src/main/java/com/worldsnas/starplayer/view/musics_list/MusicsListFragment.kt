@@ -34,7 +34,6 @@ class MusicsListFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private var musicList = ArrayList<Music>()
 
     private val musicListViewModel by
     viewModels<MusicListViewModel> { viewModelFactory }
@@ -72,19 +71,12 @@ class MusicsListFragment : Fragment() {
         val musicObserver = Observer<List<MusicRepoModel>> {
 
             val musics = it
-            prepareMusicListService(musics)
             Log.d("tag", it.toString())
             musicListAdapter.submitList(musics)
         }
         musicListViewModel.postMusic().observe(viewLifecycleOwner, musicObserver)
     }
 
-    private fun prepareMusicListService(musics: List<MusicRepoModel>) {
-            musicList.clear()
-        for (musicRepo in musics) {
-            musicList.add(Music(musicRepo.id,musicRepo.title,musicRepo.artist,musicRepo.album,musicRepo.genre,musicRepo.address))
-        }
-    }
 
     private fun daggerSetup() {
 
@@ -144,7 +136,8 @@ class MusicsListFragment : Fragment() {
 //        val action = MusicsListFragmentDirections.actionMusicsListFragmentToPlayerFragment(music)
 //
 //        findNavController().navigate(action)
-        ExoPlayerService.actionStart(context, musicList,music.id)
+        val arrayList = ArrayList(musicListViewModel.postMusic().value!!)
+        ExoPlayerService.actionStart(context,arrayList ,arrayList.indexOf(MusicRepoModel(music.id,music.title,music.artist,music.album,music.genre,music.address)))
     }
 
 
