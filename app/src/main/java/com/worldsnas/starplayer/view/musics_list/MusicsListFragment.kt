@@ -99,8 +99,7 @@ class MusicsListFragment : Fragment() {
     }
 
     private fun requestPermission() {
-        ActivityCompat.requestPermissions(
-            activity!!,
+        requestPermissions(
             arrayOf(READ_EXTERNAL_STORAGE),
             ConstValues.READ_EXTERNAL_STORAGE_REQUEST_CODE
         )
@@ -113,18 +112,15 @@ class MusicsListFragment : Fragment() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        when (requestCode) {
-            ConstValues.READ_EXTERNAL_STORAGE_REQUEST_CODE -> {
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    liveDataSetup()
+        if (requestCode == ConstValues.READ_EXTERNAL_STORAGE_REQUEST_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                liveDataSetup()
 
-                } else {
-                    // disable function did not granted
-                    Toast.makeText(context, "Need Permission to Access Songs", Toast.LENGTH_SHORT)
-                        .show()
-                }
+            } else {
+                // disable function did not granted
+                Toast.makeText(context, "Need Permission to Access Songs", Toast.LENGTH_SHORT)
+                    .show()
             }
-            else -> return
         }
     }
 
