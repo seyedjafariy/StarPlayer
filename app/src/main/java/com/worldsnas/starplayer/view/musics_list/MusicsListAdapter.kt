@@ -42,21 +42,23 @@ class MusicListItemViewHolder(
     override fun onBind(obj: MusicRepoModel) {
         mBinding.txtMusicTitle.text = obj.title
         mBinding.txtArtist.text = obj.artist
-        favoriteStateHandler(obj)
+        favoriteClickListener(obj)
         sendToPlay(obj)
+    }
+
+    private fun favoriteClickListener(obj: MusicRepoModel) {
+        favoriteStateHandler(obj)
+        mBinding.imgMusicFavorite.setOnClickListener {
+
+            obj.isFavorite = obj.isFavorite.not()
+            favoriteStateHandler(obj)
+            onFavoriteClickListener(obj)
+        }
     }
 
     private fun favoriteStateHandler(obj: MusicRepoModel) {
         if (obj.isFavorite) mBinding.imgMusicFavorite.setImageResource(R.color.colorAccent)
         else mBinding.imgMusicFavorite.setImageResource(R.color.colorPrimary)
-        mBinding.imgMusicFavorite.setOnClickListener() {
-
-            obj.isFavorite = obj.isFavorite.not()
-            if (obj.isFavorite) mBinding.imgMusicFavorite.setImageResource(R.color.colorAccent)
-            else mBinding.imgMusicFavorite.setImageResource(R.color.colorPrimary)
-
-            onFavoriteClickListener(obj)
-        }
     }
 
     private fun sendToPlay(obj: MusicRepoModel) {
