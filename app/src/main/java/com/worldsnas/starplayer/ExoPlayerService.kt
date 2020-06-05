@@ -15,7 +15,7 @@ import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.*
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
-import com.worldsnas.starplayer.model.MusicRepoModel
+import com.worldsnas.starplayer.model.Music
 import java.util.*
 
 class ExoPlayerService : Service(), Player.EventListener {
@@ -26,25 +26,26 @@ class ExoPlayerService : Service(), Player.EventListener {
 
     lateinit var player: SimpleExoPlayer
 
-    private var playbackPosition: Long = defaultValue.toLong()
-    private lateinit var musicList: ArrayList<MusicRepoModel>
-    private var currentMusicPosition: Int = defaultValue
+    private var playbackPosition: Long = 0
+    private lateinit var musicList: ArrayList<Music>
+    private var currentMusicPosition: Int = 0
 
 
     override fun onDestroy() {
         super.onDestroy()
         releasePlayer()
+        releasePlayer()
     }
 
 
-    private fun play(trackModel: MusicRepoModel) {
-        val trackModels = ArrayList<MusicRepoModel>()
-        trackModels.add(trackModel)
-        play(trackModels)
+    private fun play(trackModel: Music) {
+        musicList = ArrayList<Music>()
+        musicList.add(trackModel)
+        play(musicList)
     }
 
-    private fun play(trackModels: ArrayList<MusicRepoModel>) {
-        playbackPosition = defaultValue.toLong()
+    private fun play(trackModels: ArrayList<Music>) {
+        playbackPosition = 0
         if (trackModels.size > 0) {
             val mediaSources =
                 arrayOfNulls<MediaSource>(trackModels.size)
@@ -57,8 +58,6 @@ class ExoPlayerService : Service(), Player.EventListener {
             startPlayer()
         }
     }
-
-
 
 
     private fun pausePlayer() {
@@ -83,8 +82,7 @@ class ExoPlayerService : Service(), Player.EventListener {
                 .build(), true
         )
 
-//        player.seekTo(currentWindow, playbackPosition)
-//        player.playWhenReady = true
+
         player.addListener(this)
 
     }
@@ -104,9 +102,7 @@ class ExoPlayerService : Service(), Player.EventListener {
 
         when (intent.action) {
             PLAY_ACTION -> {
-                if (player.currentPosition == player.contentPosition && player.nextWindowIndex == C.INDEX_UNSET) {
-                    playbackPosition = defaultValue.toLong()
-                }
+
                 startPlayer()
             }
             PAUSE_ACTION -> pausePlayer()
@@ -114,13 +110,13 @@ class ExoPlayerService : Service(), Player.EventListener {
                 musicList = intent.getParcelableArrayListExtra(
                     TAG
                 )!!
-                currentMusicPosition = intent.getIntExtra(CURRENT_MUSIC_POSITION_KEY, defaultValue)
+                currentMusicPosition = intent.getIntExtra(CURRENT_MUSIC_POSITION_KEY, 0)
                 play(
                     musicList
                 )
             }
             START_TRACK_ACTION -> play(
-                intent.getParcelableExtra<MusicRepoModel>(
+                intent.getParcelableExtra<Music>(
                     TAG
                 )!!
             )
@@ -130,8 +126,8 @@ class ExoPlayerService : Service(), Player.EventListener {
                 if (prev >= 0 && prev <= mediaSource.size) {
                     currentMusicPosition = prev
                 } else {
-                    currentMusicPosition = defaultValue
-                    playbackPosition = defaultValue.toLong()
+                    currentMusicPosition = 0
+                    playbackPosition = 0
                 }
                 startPlayer()
             }
@@ -141,12 +137,15 @@ class ExoPlayerService : Service(), Player.EventListener {
                 if (next >= 0 && next < mediaSource.size) {
                     currentMusicPosition = next
                 } else {
-                    currentMusicPosition = defaultValue
-                    playbackPosition = defaultValue.toLong()
+                    currentMusicPosition = 0
+                    playbackPosition = 0
                 }
                 startPlayer()
             }
-            STOP_ACTION -> stopAction()
+            STOP_ACTION -> {
+                stopAction()
+            }
+            else -> stopAction()
         }
 
         return START_STICKY
@@ -169,7 +168,7 @@ class ExoPlayerService : Service(), Player.EventListener {
         }
     }
 
-    private fun showCurrentTrackNotification(music: MusicRepoModel): MusicRepoModel {
+    private fun showCurrentTrackNotification(music: Music): Music{
 
         val pendingIntent = PendingIntent.getActivity(
             this@ExoPlayerService,
@@ -343,12 +342,11 @@ class ExoPlayerService : Service(), Player.EventListener {
         private const val STOP_ACTION = "action.stop"
         private const val CURRENT_MUSIC_POSITION_KEY = "currentMusicPosition"
         private const val FOREGROUND_SERVICE_NOTIFICATION_ID = 101
-        private const val defaultValue = 0
 
 
         fun actionStart(
             context: Context?,
-            arr: ArrayList<MusicRepoModel>,
+            arr: ArrayList<Music>,
             currentMusicPosition: Int
         ) {
             if (context == null) return
@@ -357,6 +355,19 @@ class ExoPlayerService : Service(), Player.EventListener {
                 action = START_TRACKS_ARRAY_ACTION
                 putParcelableArrayListExtra(TAG, arr)
                 putExtra(CURRENT_MUSIC_POSITION_KEY, currentMusicPosition)
+            })
+
+        }
+
+        fun actionStart(
+            context: Context?,
+            music: Music
+        ) {
+            if (context == null) return
+
+            callService(context, Intent(context, ExoPlayerService::class.java).apply {
+                action = START_TRACK_ACTION
+                putExtra(TAG, music)
             })
 
         }

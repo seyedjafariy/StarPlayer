@@ -16,10 +16,9 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.RecyclerView
+import androidx.navigation.fragment.findNavController
 import com.worldsnas.starplayer.App
 import com.worldsnas.starplayer.ConstValues
-import com.worldsnas.starplayer.ExoPlayerService
 import com.worldsnas.starplayer.databinding.FragmentMusicsListBinding
 import com.worldsnas.starplayer.di.components.DaggerMusicListComponent
 import com.worldsnas.starplayer.di.components.MusicListComponent
@@ -133,11 +132,9 @@ class MusicsListFragment : Fragment() {
     }
 
     private fun musicListener(music: Music) {
-//        val action = MusicsListFragmentDirections.actionMusicsListFragmentToPlayerFragment(music)
-//
-//        findNavController().navigate(action)
-        val arrayList = ArrayList(musicListViewModel.postMusic().value!!)
-        ExoPlayerService.actionStart(context,arrayList ,arrayList.indexOf(MusicRepoModel(music.id,music.title,music.artist,music.album,music.genre,music.address)))
+        val action = MusicsListFragmentDirections.actionMusicsListFragmentToPlayerFragment(music)
+
+        findNavController().navigate(action)
     }
 
 
