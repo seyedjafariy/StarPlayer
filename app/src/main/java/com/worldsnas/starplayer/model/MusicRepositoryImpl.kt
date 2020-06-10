@@ -1,6 +1,7 @@
 package com.worldsnas.starplayer.model
 
 import com.worldsnas.starplayer.api.WebServiceApi
+import com.worldsnas.starplayer.model.persistent.AppDataBase
 import com.worldsnas.starplayer.model.persistent.FavoriteMusic
 import com.worldsnas.starplayer.model.persistent.FavoriteMusicDao
 import kotlinx.coroutines.Dispatchers
@@ -10,7 +11,7 @@ import javax.inject.Inject
 class MusicRepositoryImpl @Inject constructor(
     private val localMusicProvider: LocalMusicProvider,
     private val webServiceApi: WebServiceApi,
-    private val favoriteMusicDao: FavoriteMusicDao
+    private val appDataBase: AppDataBase
 ) : MusicRepository {
 
     override suspend fun getApiData(page: Int, count: Int): List<MusicRepoModel> =
@@ -34,7 +35,7 @@ class MusicRepositoryImpl @Inject constructor(
     override suspend fun getLocalData(): List<MusicRepoModel> =
         withContext(Dispatchers.IO) {
             val localList = localMusicProvider.getAllMusic().toMutableList()
-            val favoritesList = favoriteMusicDao.getAllMusics()
+            val favoritesList = appDataBase.favoriteMusicDao().getAllMusics()
 
             for (localItem in localList) {
                 for (favItem in favoritesList) {
@@ -56,9 +57,9 @@ class MusicRepositoryImpl @Inject constructor(
         )
 
         if (musicRepoModel.isFavorite) {
-            favoriteMusicDao.insert(favoriteMusic)
+            appDataBase.favoriteMusicDao().insert(favoriteMusic)
         } else {
-            favoriteMusicDao.delete(favoriteMusic)
+            appDataBase.favoriteMusicDao().delete(favoriteMusic)
         }
     }
 
