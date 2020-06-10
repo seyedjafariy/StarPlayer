@@ -1,9 +1,9 @@
 package com.worldsnas.starplayer.model
 
+import android.util.Log
 import com.worldsnas.starplayer.api.WebServiceApi
 import com.worldsnas.starplayer.model.persistent.AppDataBase
 import com.worldsnas.starplayer.model.persistent.FavoriteMusic
-import com.worldsnas.starplayer.model.persistent.FavoriteMusicDao
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -37,14 +37,24 @@ class MusicRepositoryImpl @Inject constructor(
             val localList = localMusicProvider.getAllMusic().toMutableList()
             val favoritesList = appDataBase.favoriteMusicDao().getAllMusics()
 
+
             for (localItem in localList) {
                 for (favItem in favoritesList) {
-                    if (localItem.id == favItem.id)
+                    if (localItem.id == favItem.id) {
                         localItem.isFavorite = true
+                        favoritesList.remove(favItem)
+                        break
+                    }
                 }
             }
+
+            notExistMusic(favoritesList)
             localList
         }
+
+   private suspend fun notExistMusic(favoritesList: MutableList<FavoriteMusic>) {
+        appDataBase.favoriteMusicDao().deleteFavoriteMusicsList(favoritesList)
+    }
 
     override suspend fun favoritesHandler(musicRepoModel: MusicRepoModel) {
         val favoriteMusic = FavoriteMusic(
