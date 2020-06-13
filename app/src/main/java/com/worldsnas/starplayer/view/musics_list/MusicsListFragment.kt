@@ -19,6 +19,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.worldsnas.starplayer.App
 import com.worldsnas.starplayer.ConstValues
+import com.worldsnas.starplayer.ExoPlayerService
 import com.worldsnas.starplayer.databinding.FragmentMusicsListBinding
 import com.worldsnas.starplayer.di.components.DaggerMusicListComponent
 import com.worldsnas.starplayer.di.components.MusicListComponent
@@ -132,9 +133,11 @@ class MusicsListFragment : Fragment() {
     }
 
     private fun musicListener(music: Music) {
-        val action = MusicsListFragmentDirections.actionMusicsListFragmentToPlayerFragment(music)
+//        val action = MusicsListFragmentDirections.actionMusicsListFragmentToPlayerFragment(music)
+//
+//        findNavController().navigate(action)
 
-        findNavController().navigate(action)
+        ExoPlayerService.actionStart(context!!,music)
     }
 
 

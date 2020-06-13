@@ -1,15 +1,14 @@
 package com.worldsnas.starplayer
 
-import android.app.Notification
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.Service
+import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.IBinder
 import android.text.TextUtils
+import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.*
@@ -34,7 +33,6 @@ class ExoPlayerService : Service(), Player.EventListener {
     override fun onDestroy() {
         super.onDestroy()
         releasePlayer()
-        releasePlayer()
     }
 
 
@@ -46,6 +44,7 @@ class ExoPlayerService : Service(), Player.EventListener {
 
     private fun play(trackModels: ArrayList<Music>) {
         playbackPosition = 0
+        reInitPlayer()
         if (trackModels.size > 0) {
             val mediaSources =
                 arrayOfNulls<MediaSource>(trackModels.size)
@@ -56,6 +55,13 @@ class ExoPlayerService : Service(), Player.EventListener {
             mediaSource = ConcatenatingMediaSource(*mediaSources)
             player.prepare(mediaSource)
             startPlayer()
+        }
+    }
+
+    private fun reInitPlayer() {
+        if (player.isPlaying) {
+        releasePlayer()
+        initializePlayer()
         }
     }
 
@@ -145,7 +151,10 @@ class ExoPlayerService : Service(), Player.EventListener {
             STOP_ACTION -> {
                 stopAction()
             }
-            else -> stopAction()
+            else -> {
+                stopAction()
+                throw UnsupportedOperationException(intent.action + " not supported as an action to ExoPLayerService")
+            }
         }
 
         return START_STICKY
@@ -168,7 +177,7 @@ class ExoPlayerService : Service(), Player.EventListener {
         }
     }
 
-    private fun showCurrentTrackNotification(music: Music): Music{
+    private fun showCurrentTrackNotification(music: Music): Music {
 
         val pendingIntent = PendingIntent.getActivity(
             this@ExoPlayerService,
@@ -176,20 +185,26 @@ class ExoPlayerService : Service(), Player.EventListener {
             Intent(this@ExoPlayerService, MainActivity::class.java),
             PendingIntent.FLAG_UPDATE_CURRENT
         )
-        val notificationBuilder =
-            NotificationCompat.Builder(applicationContext)
-                .setSmallIcon(R.mipmap.ic_launcher_round)
-                .setContentTitle(if (TextUtils.isEmpty(music.title)) music.artist else music.title)
-                .setContentText(music.artist)
-                .setContentIntent(pendingIntent)
-                .setOngoing(true)
-                .setStyle(
-                    androidx.media.app.NotificationCompat.MediaStyle()
-                        .setShowActionsInCompactView(0, 1, 2, 3)
-                )
-                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                .setPriority(Notification.PRIORITY_MAX)
-                .setWhen(0)
+
+        val notificationBuilder: NotificationCompat.Builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationCompat.Builder(applicationContext, createNotificationChannel())
+        } else {
+            NotificationCompat.Builder(applicationContext,"")
+        }
+
+        notificationBuilder.setSmallIcon(R.mipmap.ic_launcher_round)
+            .setContentTitle(if (TextUtils.isEmpty(music.title)) music.artist else music.title)
+            .setContentText(music.artist)
+            .setContentIntent(pendingIntent)
+            .setOngoing(true)
+            .setStyle(
+                androidx.media.app.NotificationCompat.MediaStyle()
+                    .setShowActionsInCompactView(0, 1, 2, 3)
+            )
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .setPriority(Notification.PRIORITY_MAX)
+            .setWhen(0)
+
         val pendingIntentPrev = PendingIntent.getService(
             this,
             FOREGROUND_SERVICE_NOTIFICATION_ID,
@@ -332,7 +347,7 @@ class ExoPlayerService : Service(), Player.EventListener {
 
 
     companion object {
-        private const val TAG = "PlayerService"
+        private const val TAG = "ExoPlayerService"
         private const val PREV_ACTION = "action.prev"
         private const val PLAY_ACTION = "action.play"
         private const val PAUSE_ACTION = "action.pause"
@@ -345,11 +360,10 @@ class ExoPlayerService : Service(), Player.EventListener {
 
 
         fun actionStart(
-            context: Context?,
+            context: Context,
             arr: ArrayList<Music>,
             currentMusicPosition: Int
         ) {
-            if (context == null) return
 
             callService(context, Intent(context, ExoPlayerService::class.java).apply {
                 action = START_TRACKS_ARRAY_ACTION
@@ -360,11 +374,9 @@ class ExoPlayerService : Service(), Player.EventListener {
         }
 
         fun actionStart(
-            context: Context?,
+            context: Context,
             music: Music
         ) {
-            if (context == null) return
-
             callService(context, Intent(context, ExoPlayerService::class.java).apply {
                 action = START_TRACK_ACTION
                 putExtra(TAG, music)
@@ -383,5 +395,16 @@ class ExoPlayerService : Service(), Player.EventListener {
 
     }
 
-
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun createNotificationChannel(): String {
+        val chan = NotificationChannel(
+            TAG,
+            "StarPlayer", NotificationManager.IMPORTANCE_NONE
+        )
+        chan.lightColor = Color.BLUE
+        chan.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+        val service = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        service.createNotificationChannel(chan)
+        return TAG
+    }
 }
