@@ -1,4 +1,3 @@
-
 plugins {
     id(BuildPlugins.androidApplication)
     id(BuildPlugins.kotlinAndroid)
@@ -65,6 +64,7 @@ dependencies {
 
     implementation(Ui.navigationFragment)
     implementation(Ui.navigationUi)
+    implementation(Support.viewPager2)
 
     implementation(MoshiLibs.moshiKotlin)
     implementation(MoshiLibs.moshiRetrofit)
