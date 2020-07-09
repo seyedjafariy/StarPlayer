@@ -10,12 +10,15 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.worldsnas.starplayer.App
 import com.worldsnas.starplayer.ConstValues
+import com.worldsnas.starplayer.NavDirections
+import com.worldsnas.starplayer.R
 import com.worldsnas.starplayer.databinding.FragmentMusicsListBinding
 import com.worldsnas.starplayer.di.components.DaggerMusicListComponent
 import com.worldsnas.starplayer.di.components.MusicListComponent
@@ -125,9 +128,12 @@ class MusicsListFragment : Fragment() {
     }
 
     private fun onItemClickListener(music: Music) {
-        val action = MusicsListFragmentDirections.actionMusicsListFragmentToPlayerFragment(music)
+        val action = NavDirections.actionGlobalPlayerFragment(music)
 
         findNavController().navigate(action)
+
+//        val bundle = bundleOf("music" to music)
+//        findNavController().navigate(R.id.action_global_playerFragment, bundle)
     }
 
     private fun onFavoriteClickListener(musicRepoModel: MusicRepoModel) {
