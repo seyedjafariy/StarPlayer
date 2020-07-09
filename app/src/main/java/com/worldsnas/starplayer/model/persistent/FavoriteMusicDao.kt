@@ -8,7 +8,7 @@ import com.worldsnas.starplayer.model.MusicRepoModel
 interface FavoriteMusicDao {
 
     @Query("select * from favorites")
-    suspend fun getAllMusics(): MutableList<FavoriteMusic>
+    suspend fun getAllFavorites(): MutableList<FavoriteMusic>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(favoriteMusic: FavoriteMusic)
