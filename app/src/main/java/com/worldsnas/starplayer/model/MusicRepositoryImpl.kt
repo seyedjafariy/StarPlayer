@@ -35,7 +35,7 @@ class MusicRepositoryImpl @Inject constructor(
     override suspend fun getLocalData(): List<MusicRepoModel> =
         withContext(Dispatchers.IO) {
             val localList = localMusicProvider.getAllMusic().toMutableList()
-            val favoritesList = appDataBase.favoriteMusicDao().getAllMusics()
+            val favoritesList = appDataBase.favoriteMusicDao().getAllFavorites()
 
 
             for (localItem in localList) {
@@ -52,7 +52,14 @@ class MusicRepositoryImpl @Inject constructor(
             localList
         }
 
-   private suspend fun notExistMusic(favoritesList: MutableList<FavoriteMusic>) {
+    override suspend fun getFavoriteData(): List<MusicRepoModel> = withContext(Dispatchers.IO) {
+        appDataBase.favoriteMusicDao().getAllFavorites().map {
+            MusicRepoModel(it.id, it.title, it.artist, it.album, it.genre, it.address, true)
+        }
+    }
+
+
+    private suspend fun notExistMusic(favoritesList: MutableList<FavoriteMusic>) {
         appDataBase.favoriteMusicDao().deleteFavoriteMusicsList(favoritesList)
     }
 
