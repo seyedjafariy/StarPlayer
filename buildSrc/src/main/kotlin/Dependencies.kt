@@ -19,7 +19,7 @@ object Versions {
     const val fakeItVersion = "v0.5"
 
     const val kotlinVersion = "1.3.61"
-    const val coroutinesVersion = "1.3.3"
+    const val coroutinesVersion = "1.3.5"
     const val detektPluginVersion = "1.0.0-RC16"
     const val arrowVersion = "0.9.0"
 
@@ -201,6 +201,8 @@ object ArchComponent {
         "androidx.lifecycle:lifecycle-extensions:${Versions.archComponentVersion}"
     const val lifecycleCompiler =
         "androidx.lifecycle:lifecycle-compiler:${Versions.archComponentVersion}"
+    const val lifecycleLiveData =
+        "androidx.lifecycle:lifecycle-livedata-ktx:${Versions.archComponentVersion}"
 }
 
 object AndroidKts {

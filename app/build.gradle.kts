@@ -76,4 +76,6 @@ dependencies {
     implementation(Network.okHttpLogging)
     implementation(Network.retrofit)
     implementation(Network.okHttp)
+
+    implementation(ArchComponent.lifecycleLiveData)
 }
