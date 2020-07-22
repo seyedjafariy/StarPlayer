@@ -2,13 +2,13 @@ package com.worldsnas.starplayer.model.persistent
 
 
 import androidx.room.*
-import com.worldsnas.starplayer.model.MusicRepoModel
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FavoriteMusicDao {
 
     @Query("select * from favorites")
-    suspend fun getAllFavorites(): MutableList<FavoriteMusic>
+    fun getAllFavorites(): Flow<List<FavoriteMusic>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(favoriteMusic: FavoriteMusic)
