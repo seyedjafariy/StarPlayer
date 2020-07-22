@@ -1,10 +1,10 @@
 package com.worldsnas.starplayer.model
 
-import android.util.Log
 import com.worldsnas.starplayer.api.WebServiceApi
 import com.worldsnas.starplayer.model.persistent.AppDataBase
 import com.worldsnas.starplayer.model.persistent.FavoriteMusic
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -32,32 +32,42 @@ class MusicRepositoryImpl @Inject constructor(
             }!!
         }
 
+    //TODO : online musics are removing because they are not in local List
+    //TODO : change to flow
     override suspend fun getLocalData(): List<MusicRepoModel> =
         withContext(Dispatchers.IO) {
-            val localList = localMusicProvider.getAllMusic().toMutableList()
-            val favoritesList = appDataBase.favoriteMusicDao().getAllFavorites()
+            val localList = localMusicProvider.getAllMusic()
+           val favList =  appDataBase.favoriteMusicDao().getAllFavorites().first().toMutableList()
 
 
             for (localItem in localList) {
-                for (favItem in favoritesList) {
+                for (favItem in favList) {
                     if (localItem.id == favItem.id) {
                         localItem.isFavorite = true
-                        favoritesList.remove(favItem)
+                        favList.remove(favItem)
                         break
                     }
                 }
-            }
 
-            notExistMusic(favoritesList)
+            }
+            notExistMusic(favList)
             localList
         }
 
-    override suspend fun getFavoriteData(): List<MusicRepoModel> = withContext(Dispatchers.IO) {
+    override fun getFavoriteData(): Flow<List<MusicRepoModel>> =
         appDataBase.favoriteMusicDao().getAllFavorites().map {
-            MusicRepoModel(it.id, it.title, it.artist, it.album, it.genre, it.address, true)
+            it.map { value ->
+                MusicRepoModel(
+                    value.id,
+                    value.title,
+                    value.artist,
+                    value.album,
+                    value.genre,
+                    value.address,
+                    true
+                )
+            }
         }
-    }
-
 
     private suspend fun notExistMusic(favoritesList: MutableList<FavoriteMusic>) {
         appDataBase.favoriteMusicDao().deleteFavoriteMusicsList(favoritesList)
