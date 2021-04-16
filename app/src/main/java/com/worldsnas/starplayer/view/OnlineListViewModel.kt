@@ -1,33 +1,25 @@
-package com.worldsnas.starplayer.view.musics_list
+package com.worldsnas.starplayer.view
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.worldsnas.starplayer.model.MusicRepoModel
 import com.worldsnas.starplayer.model.MusicRepository
-import com.worldsnas.starplayer.model.persistent.FavoriteMusic
-import kotlinx.coroutines.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class MusicListViewModel @Inject constructor(
-    private val musicRepository: MusicRepository
-) :
-    ViewModel() {
-
-    init {
-        getLocalMusic()
-    }
-
+class OnlineListViewModel  @Inject constructor(private val musicRepository: MusicRepository) : ViewModel() {
     private val postMusicList = MutableLiveData<List<MusicRepoModel>>()
 
-    private fun getLocalMusic() =
+    init {
+        getOnlineMusic()
+    }
+    private fun getOnlineMusic() =
         viewModelScope.launch {
-            val musicsList = musicRepository.getLocalData()
+            val musicsList = musicRepository.getApiData(1,10)
             postMusicList.postValue(musicsList)
         }
-
     fun postMusic(): LiveData<List<MusicRepoModel>> =
         postMusicList
 

@@ -4,18 +4,26 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
+import com.worldsnas.starplayer.R
 import com.worldsnas.starplayer.core.BaseViewHolder
 import com.worldsnas.starplayer.databinding.ItemMusicBinding
 import com.worldsnas.starplayer.model.Music
 import com.worldsnas.starplayer.model.MusicRepoModel
 
-class MusicsListAdapter(private var onItemClick: (Music) -> Unit) :
+class MusicsListAdapter(
+    private var onItemClickListener: (Music) -> Unit,
+    private var onFavoriteClickListener: (MusicRepoModel) -> Unit
+) :
     ListAdapter<MusicRepoModel, MusicListItemViewHolder>(DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MusicListItemViewHolder {
         val musicViewBinding: ItemMusicBinding =
             ItemMusicBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return MusicListItemViewHolder(musicViewBinding, onItemClick)
+        return MusicListItemViewHolder(
+            musicViewBinding,
+            onItemClickListener,
+            onFavoriteClickListener
+        )
     }
 
     override fun onBindViewHolder(holder: MusicListItemViewHolder, position: Int) {
@@ -26,15 +34,31 @@ class MusicsListAdapter(private var onItemClick: (Music) -> Unit) :
 
 class MusicListItemViewHolder(
     private val mBinding: ItemMusicBinding,
-    private val onItemClick: ((Music) -> Unit)
+    private val onItemClickListener: (Music) -> Unit,
+    private val onFavoriteClickListener: (MusicRepoModel) -> Unit
 ) :
     BaseViewHolder<MusicRepoModel>(mBinding.root) {
 
     override fun onBind(obj: MusicRepoModel) {
         mBinding.txtMusicTitle.text = obj.title
         mBinding.txtArtist.text = obj.artist
-
+        favoriteClickListener(obj)
         sendToPlay(obj)
+    }
+
+    private fun favoriteClickListener(obj: MusicRepoModel) {
+        favoriteStateHandler(obj)
+        mBinding.imgMusicFavorite.setOnClickListener {
+
+            obj.isFavorite = obj.isFavorite.not()
+            favoriteStateHandler(obj)
+            onFavoriteClickListener(obj)
+        }
+    }
+
+    private fun favoriteStateHandler(obj: MusicRepoModel) {
+        if (obj.isFavorite) mBinding.imgMusicFavorite.setImageResource(R.color.colorAccent)
+        else mBinding.imgMusicFavorite.setImageResource(R.color.colorPrimary)
     }
 
     private fun sendToPlay(obj: MusicRepoModel) {
@@ -45,10 +69,11 @@ class MusicListItemViewHolder(
                 obj.artist,
                 obj.album,
                 obj.genre,
-                obj.address
+                obj.address,
+                obj.isFavorite
             )
 
-            onItemClick(localMusic)
+            onItemClickListener(localMusic)
         }
     }
 }

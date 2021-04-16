@@ -19,7 +19,7 @@ constructor(private val contentResolver: ContentResolver) : LocalMusicProvider {
         MediaStore.Audio.Media.TITLE,
         MediaStore.Audio.Media.ALBUM
     )
-    private val uri: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+    private val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
 
     override suspend fun getAllMusic(): List<MusicRepoModel> =
         withContext(IO) {
@@ -41,8 +41,8 @@ constructor(private val contentResolver: ContentResolver) : LocalMusicProvider {
 
                     val id = cursor.getInt(idColumn)
                     val title = cursor.getString(titleColumn)
-                    val album = cursor.getString(albumColumn)
                     val artist = cursor.getString(artistColumn)
+                    val album = cursor.getString(albumColumn)
 
                     val contentUri = ConstValues.PRE_ADDRESS_VOLUME +
                             ContentUris.withAppendedId(uri, id.toLong()).path
@@ -50,10 +50,11 @@ constructor(private val contentResolver: ContentResolver) : LocalMusicProvider {
                     val musicModel = MusicRepoModel(
                         id,
                         title,
-                        album,
                         artist,
+                        album,
                         "genre",
-                        contentUri
+                        contentUri,
+                        false
                     )
                     musicRepoModels += musicModel
                 } while (cursor.moveToNext())

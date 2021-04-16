@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.utils.addToStdlib.safeAs
-
 plugins {
     id(BuildPlugins.androidApplication)
     id(BuildPlugins.kotlinAndroid)
@@ -66,12 +64,18 @@ dependencies {
 
     implementation(Ui.navigationFragment)
     implementation(Ui.navigationUi)
+    implementation(Support.viewPager2)
 
     implementation(MoshiLibs.moshiKotlin)
     implementation(MoshiLibs.moshiRetrofit)
 
+    implementation(Database.roomRuntime)
+    kapt(Database.roomCompiler)
+    implementation(Database.roomKotlinCoroutine)
 
     implementation(Network.okHttpLogging)
     implementation(Network.retrofit)
     implementation(Network.okHttp)
+
+    implementation(ArchComponent.lifecycleLiveData)
 }

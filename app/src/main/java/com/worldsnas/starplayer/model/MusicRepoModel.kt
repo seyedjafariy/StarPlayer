@@ -6,5 +6,6 @@ data class MusicRepoModel(
     val artist: String,
     val album: String,
     val genre: String,
-    val address: String
+    val address: String,
+    var isFavorite: Boolean
 )

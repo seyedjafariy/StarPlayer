@@ -10,5 +10,6 @@ data class Music(
     val artist: String,
     val album: String,
     val genre: String,
-    val address: String
+    val address: String,
+    val isFavorite: Boolean
 ) : Parcelable

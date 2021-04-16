@@ -8,16 +8,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.worldsnas.starplayer.App
 import com.worldsnas.starplayer.ConstValues
-import com.worldsnas.starplayer.R
+import com.worldsnas.starplayer.NavDirections
 import com.worldsnas.starplayer.databinding.FragmentMusicsListBinding
 import com.worldsnas.starplayer.di.components.DaggerMusicListComponent
 import com.worldsnas.starplayer.di.components.MusicListComponent
@@ -34,8 +32,10 @@ class MusicsListFragment : Fragment() {
 
     private val musicListViewModel by
     viewModels<MusicListViewModel> { viewModelFactory }
-
-    private val musicListAdapter = MusicsListAdapter { item -> musicListener(item) }
+    private val musicListAdapter =
+        MusicsListAdapter({ music -> onItemClickListener(music) }) { musicRepoModel ->
+            onFavoriteClickListener(musicRepoModel)
+        }
 
     private var _binding: FragmentMusicsListBinding? = null
     private val binding get() = _binding!!
@@ -98,8 +98,7 @@ class MusicsListFragment : Fragment() {
     }
 
     private fun requestPermission() {
-        ActivityCompat.requestPermissions(
-            activity!!,
+        requestPermissions(
             arrayOf(READ_EXTERNAL_STORAGE),
             ConstValues.READ_EXTERNAL_STORAGE_REQUEST_CODE
         )
@@ -112,25 +111,25 @@ class MusicsListFragment : Fragment() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        when (requestCode) {
-            ConstValues.READ_EXTERNAL_STORAGE_REQUEST_CODE -> {
-                if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    liveDataSetup()
+        if (requestCode == ConstValues.READ_EXTERNAL_STORAGE_REQUEST_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                liveDataSetup()
 
-                } else {
-                    // disable function did not granted
-                    Toast.makeText(context, "Need Permission to Access Songs", Toast.LENGTH_SHORT)
-                        .show()
-                }
+            } else {
+                // disable function did not granted
+                Toast.makeText(context, "Need Permission to Access Songs", Toast.LENGTH_SHORT)
+                    .show()
             }
-            else -> return
         }
     }
 
-    private fun musicListener(music: Music) {
-        val action = MusicsListFragmentDirections.actionMusicsListFragmentToPlayerFragment(music)
-
+    private fun onItemClickListener(music: Music) {
+        val action = NavDirections.actionGlobalPlayerFragment(music)
         findNavController().navigate(action)
+    }
+
+    private fun onFavoriteClickListener(musicRepoModel: MusicRepoModel) {
+        musicListViewModel.favoritesHandler(musicRepoModel)
     }
 
 }

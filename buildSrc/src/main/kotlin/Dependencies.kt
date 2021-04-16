@@ -8,6 +8,7 @@ object AndroidSdk {
 object Versions {
 
     const val buildToolsVersion = "3.6.1"
+    const val roomVersion = "2.2.5"
 
     const val jUnitVersion = "4.13-beta-3"
     const val assertJVersion = "3.12.2"
@@ -18,7 +19,7 @@ object Versions {
     const val fakeItVersion = "v0.5"
 
     const val kotlinVersion = "1.3.61"
-    const val coroutinesVersion = "1.3.3"
+    const val coroutinesVersion = "1.3.5"
     const val detektPluginVersion = "1.0.0-RC16"
     const val arrowVersion = "0.9.0"
 
@@ -200,6 +201,8 @@ object ArchComponent {
         "androidx.lifecycle:lifecycle-extensions:${Versions.archComponentVersion}"
     const val lifecycleCompiler =
         "androidx.lifecycle:lifecycle-compiler:${Versions.archComponentVersion}"
+    const val lifecycleLiveData =
+        "androidx.lifecycle:lifecycle-livedata-ktx:${Versions.archComponentVersion}"
 }
 
 object AndroidKts {
@@ -319,6 +322,10 @@ object Database {
     const val sqlDelightCoroutines =
         "com.squareup.sqldelight:coroutines-extensions:${Versions.sqlDelightVersion}"
     const val sqlDelightJVM = "com.squareup.sqldelight:sqlite-driver:${Versions.sqlDelightVersion}"
+
+    const val roomRuntime = "androidx.room:room-runtime:${Versions.roomVersion}"
+    const val roomCompiler = "androidx.room:room-compiler:${Versions.roomVersion}"
+    const val roomKotlinCoroutine = "androidx.room:room-ktx:${Versions.roomVersion}"
 }
 
 object ObjectboxLib {
