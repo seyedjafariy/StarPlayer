@@ -13,6 +13,7 @@ import androidx.core.app.NotificationCompat
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.*
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 import com.worldsnas.starplayer.model.Music
 import java.util.*
@@ -37,7 +38,7 @@ class ExoPlayerService : Service(), Player.EventListener {
 
 
     private fun play(trackModel: Music) {
-        musicList = ArrayList<Music>()
+        musicList = ArrayList()
         musicList.add(trackModel)
         play(musicList)
     }
@@ -347,6 +348,7 @@ class ExoPlayerService : Service(), Player.EventListener {
 
 
     companion object {
+        private lateinit var context: Context
         private const val TAG = "ExoPlayerService"
         private const val PREV_ACTION = "action.prev"
         private const val PLAY_ACTION = "action.play"
@@ -377,6 +379,7 @@ class ExoPlayerService : Service(), Player.EventListener {
             context: Context,
             music: Music
         ) {
+            this.context=context
             callService(context, Intent(context, ExoPlayerService::class.java).apply {
                 action = START_TRACK_ACTION
                 putExtra(TAG, music)

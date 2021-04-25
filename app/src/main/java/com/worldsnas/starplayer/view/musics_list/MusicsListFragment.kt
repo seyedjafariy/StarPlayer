@@ -1,11 +1,8 @@
 package com.worldsnas.starplayer.view.musics_list
 
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
-import android.os.Parcelable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +13,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import com.worldsnas.starplayer.App
 import com.worldsnas.starplayer.ConstValues
 import com.worldsnas.starplayer.ExoPlayerService
@@ -38,14 +34,16 @@ class MusicsListFragment : Fragment() {
     private val musicListViewModel by
     viewModels<MusicListViewModel> { viewModelFactory }
 
-    private val musicListAdapter = MusicsListAdapter { item -> musicListener(item) }
+    private lateinit var musicList: ArrayList<Music>
+
+    private val musicListAdapter = MusicsListAdapter { item -> startExoplayerService(item,musicList) }
 
     private var _binding: FragmentMusicsListBinding? = null
     private val binding get() = _binding!!
     private lateinit var musicListComponent: MusicListComponent
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater, container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMusicsListBinding.inflate(inflater, container, false)
         return binding.root
@@ -68,10 +66,12 @@ class MusicsListFragment : Fragment() {
 
     private fun liveDataSetup() {
 
-        val musicObserver = Observer<List<MusicRepoModel>> {
-
-            val musics = it
-            Log.d("tag", it.toString())
+        val musicObserver = Observer<List<MusicRepoModel>> { musics ->
+            musicList = musics.map {
+                Music(it.id, it.title, it.artist, it.album, it.genre, it.address)
+            } as ArrayList<Music>
+            val musics = musics
+            Log.d("tag", musics.toString())
             musicListAdapter.submitList(musics)
         }
         musicListViewModel.postMusic().observe(viewLifecycleOwner, musicObserver)
@@ -81,8 +81,8 @@ class MusicsListFragment : Fragment() {
     private fun daggerSetup() {
 
         musicListComponent = DaggerMusicListComponent.builder()
-            .appComponent((activity!!.application as App).appComponent)
-            .build()
+                .appComponent((activity!!.application as App).appComponent)
+                .build()
         musicListComponent.inject(this)
     }
 
@@ -96,24 +96,24 @@ class MusicsListFragment : Fragment() {
 
     private fun checkSelfPermission(): Boolean {
         val result = ContextCompat.checkSelfPermission(
-            context!!,
-            READ_EXTERNAL_STORAGE
+                context!!,
+                READ_EXTERNAL_STORAGE
         )
         return result == PackageManager.PERMISSION_GRANTED
     }
 
     private fun requestPermission() {
         ActivityCompat.requestPermissions(
-            activity!!,
-            arrayOf(READ_EXTERNAL_STORAGE),
-            ConstValues.READ_EXTERNAL_STORAGE_REQUEST_CODE
+                activity!!,
+                arrayOf(READ_EXTERNAL_STORAGE),
+                ConstValues.READ_EXTERNAL_STORAGE_REQUEST_CODE
         )
     }
 
     override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
+            requestCode: Int,
+            permissions: Array<out String>,
+            grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
@@ -125,19 +125,24 @@ class MusicsListFragment : Fragment() {
                 } else {
                     // disable function did not granted
                     Toast.makeText(context, "Need Permission to Access Songs", Toast.LENGTH_SHORT)
-                        .show()
+                            .show()
                 }
             }
             else -> return
         }
     }
 
-    private fun musicListener(music: Music) {
+    private fun startExoplayerService(music: Music) {
 //        val action = MusicsListFragmentDirections.actionMusicsListFragmentToPlayerFragment(music)
 //
 //        findNavController().navigate(action)
 
-        ExoPlayerService.actionStart(context!!,music)
+        ExoPlayerService.actionStart(context!!, music)
+    }
+
+    private fun startExoplayerService(music: Music, musicList: ArrayList<Music>) {
+
+        ExoPlayerService.actionStart(context!!, musicList, musicList.indexOf(music))
     }
 
 
