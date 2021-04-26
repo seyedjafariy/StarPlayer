@@ -1,4 +1,4 @@
-package com.worldsnas.starplayer.view.musics_list
+package com.worldsnas.starplayer.view.music_list
 
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.content.pm.PackageManager
@@ -16,7 +16,7 @@ import androidx.lifecycle.Observer
 import com.worldsnas.starplayer.App
 import com.worldsnas.starplayer.ConstValues
 import com.worldsnas.starplayer.ExoPlayerService
-import com.worldsnas.starplayer.databinding.FragmentMusicsListBinding
+import com.worldsnas.starplayer.databinding.FragmentMusicListBinding
 import com.worldsnas.starplayer.di.components.DaggerMusicListComponent
 import com.worldsnas.starplayer.di.components.MusicListComponent
 import com.worldsnas.starplayer.model.Music
@@ -25,7 +25,7 @@ import com.worldsnas.starplayer.view.ViewModelFactory
 import javax.inject.Inject
 
 
-class MusicsListFragment : Fragment() {
+class MusicListFragment : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -36,16 +36,16 @@ class MusicsListFragment : Fragment() {
 
     private lateinit var musicList: ArrayList<Music>
 
-    private val musicListAdapter = MusicsListAdapter { item -> startExoplayerService(item,musicList) }
+    private val musicListAdapter = MusicListAdapter { item -> startExoplayerService(item,musicList) }
 
-    private var _binding: FragmentMusicsListBinding? = null
+    private var _binding: FragmentMusicListBinding? = null
     private val binding get() = _binding!!
     private lateinit var musicListComponent: MusicListComponent
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentMusicsListBinding.inflate(inflater, container, false)
+        _binding = FragmentMusicListBinding.inflate(inflater, container, false)
         return binding.root
     }
 

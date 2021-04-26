@@ -1,4 +1,4 @@
-package com.worldsnas.starplayer.view.musics_list
+package com.worldsnas.starplayer.view.music_list
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,14 +14,22 @@ class MusicListViewModel @Inject constructor(
 ) :
     ViewModel() {
     init {
-        getLocalMusic()
+//        getLocalMusic()
+        getMusics()
     }
 
     private val postMusicList = MutableLiveData<List<MusicRepoModel>>()
 
     private fun getLocalMusic() {
         viewModelScope.launch {
-            val musicsList = musicRepository.getApiData(1,10)
+            val musicsList = musicRepository.getLocalData()
+            postMusicList.postValue(musicsList)
+        }
+    }
+
+    private fun getMusics() {
+        viewModelScope.launch {
+            val musicsList = musicRepository.getApiData(1, 10)
             postMusicList.postValue(musicsList)
         }
     }
