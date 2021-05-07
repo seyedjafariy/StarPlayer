@@ -14,8 +14,8 @@ class MusicListViewModel @Inject constructor(
 ) :
     ViewModel() {
     init {
-//        getLocalMusic()
-        getMusics()
+        getLocalMusic()
+//        getMusics()
     }
 
     private val postMusicList = MutableLiveData<List<MusicRepoModel>>()
