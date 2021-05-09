@@ -7,6 +7,7 @@ object AndroidSdk {
 
 object Versions {
 
+    const val mokitoKotlin2 = "2.2.0"
     const val buildToolsVersion = "3.6.1"
 
     const val jUnitVersion = "4.13-beta-3"
@@ -133,6 +134,9 @@ object Testing {
     const val fakeIt = "com.github.moove-it:fakeit:${Versions.fakeItVersion}"
 
     const val robolectric = "org.robolectric:robolectric:4.2"
+
+    const val mockitoKotlin2 =
+        "com.nhaarman.mockitokotlin2:mockito-kotlin:${Versions.mokitoKotlin2}"
 }
 
 object Kotlin {
