@@ -27,7 +27,7 @@ class MusicRepositoryImpl @Inject constructor(
                             "genre",
                             it.musicLink
                     )
-                }!!
+                }
             }
 
 

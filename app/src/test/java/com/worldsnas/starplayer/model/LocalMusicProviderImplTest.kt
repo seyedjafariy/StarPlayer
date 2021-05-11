@@ -7,12 +7,12 @@ import com.nhaarman.mockitokotlin2.doReturn
 import org.junit.Before
 import com.nhaarman.mockitokotlin2.mock
 import kotlinx.coroutines.runBlocking
-import org.hamcrest.CoreMatchers
-import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.fakes.RoboCursor
+import com.google.common.truth.Truth.assertThat
+
 
 @RunWith(RobolectricTestRunner::class)
 class LocalMusicProviderImplTest {
@@ -62,11 +62,7 @@ class LocalMusicProviderImplTest {
 
         val localMusics = localMusicProviderImpl.getAllMusic()
 
-        assertThat(
-            "musicList is empty",
-            localMusics,
-            CoreMatchers.`is`(CoreMatchers.not(emptyList()))
-        )
+        assertThat(localMusics).isNotEmpty()
 
     }
 
@@ -75,7 +71,8 @@ class LocalMusicProviderImplTest {
 
         val localMusics = localMusicProviderImpl.getAllMusic()
 
-        assertThat("musicList's size is wrong", localMusics.size, CoreMatchers.`is`(5))
+        assertThat(localMusics).hasSize(5)
+
     }
 
 

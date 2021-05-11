@@ -9,7 +9,7 @@ object Versions {
 
     const val mokitoKotlin2 = "2.2.0"
     const val buildToolsVersion = "3.6.1"
-
+    const val truth = "1.1.2"
     const val jUnitVersion = "4.13-beta-3"
     const val assertJVersion = "3.12.2"
     const val supportTestVersion = "1.1.0"
@@ -137,6 +137,11 @@ object Testing {
 
     const val mockitoKotlin2 =
         "com.nhaarman.mockitokotlin2:mockito-kotlin:${Versions.mokitoKotlin2}"
+
+    const val truth = "com.google.truth:truth:${Versions.truth}"
+    const val truthExtensions =
+        "com.google.truth.extensions:truth-java8-extension:${Versions.truth}"
+
 }
 
 object Kotlin {

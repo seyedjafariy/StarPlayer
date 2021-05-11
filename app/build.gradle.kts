@@ -51,6 +51,7 @@ dependencies {
     testImplementation(Testing.supportTestRunner)
     testImplementation(Testing.robolectric)
     testImplementation(Testing.mockitoKotlin2)
+    testImplementation(Testing.truth)
     androidTestImplementation(Testing.supportJunitExt)
     androidTestImplementation(Testing.espressoCore)
 
