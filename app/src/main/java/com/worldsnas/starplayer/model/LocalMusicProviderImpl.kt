@@ -19,12 +19,14 @@ constructor(private val contentResolver: ContentResolver) : LocalMusicProvider {
         MediaStore.Audio.Media.TITLE,
         MediaStore.Audio.Media.ALBUM
     )
-    private val uri: Uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+    private val uri: Uri = MediaStore.Audio.Media.INTERNAL_CONTENT_URI
+    private val selection = MediaStore.Audio.Media.IS_MUSIC + " != 0"
+
 
     override suspend fun getAllMusic(): List<MusicRepoModel> =
         withContext(IO) {
 
-            val cursor = contentResolver.query(uri, projection, null, null, null, null)
+            val cursor = contentResolver.query(uri, projection, selection, null, null, null)
             val musicRepoModels: ArrayList<MusicRepoModel> = ArrayList()
 
             cursor?.use {
@@ -44,19 +46,25 @@ constructor(private val contentResolver: ContentResolver) : LocalMusicProvider {
                     val album = cursor.getString(albumColumn)
                     val artist = cursor.getString(artistColumn)
 
-                    val contentUri = ConstValues.PRE_ADDRESS_VOLUME +
-                            ContentUris.withAppendedId(uri, id.toLong()).path
+                    val contentUri =
+                        ContentUris.withAppendedId(uri, id.toLong()).path
+                    if (contentUri.isNullOrEmpty()) {
+                        continue
+                    } else {
+                        val musicModel = MusicRepoModel(
+                            id,
+                            title,
+                            album,
+                            artist,
+                            "genre",
+                            ConstValues.PRE_ADDRESS_VOLUME+ contentUri
+                        )
 
-                    val musicModel = MusicRepoModel(
-                        id,
-                        title,
-                        album,
-                        artist,
-                        "genre",
-                        contentUri
-                    )
-                    musicRepoModels += musicModel
+                        musicRepoModels += musicModel
+                    }
+
                 } while (cursor.moveToNext())
+
             }
             musicRepoModels
         }

@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">StarPlayer</string>
+    <string name="pause">pause</string>
+    <string name="previous">previous</string>
+    <string name="play">play</string>
+    <string name="next">next</string>
+    <string name="stop">stop</string>
 </resources>

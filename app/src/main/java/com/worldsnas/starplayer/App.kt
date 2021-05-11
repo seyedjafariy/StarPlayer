@@ -5,8 +5,7 @@ import com.worldsnas.starplayer.di.components.AppComponent
 import com.worldsnas.starplayer.di.components.DaggerAppComponent
 
 
-class App  :Application(){
-
+class App  :Application() {
     lateinit var appComponent : AppComponent
 
     override fun onCreate() {
