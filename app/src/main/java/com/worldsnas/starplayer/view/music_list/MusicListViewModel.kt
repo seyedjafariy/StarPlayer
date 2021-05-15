@@ -1,6 +1,5 @@
-package com.worldsnas.starplayer.view.musics_list
+package com.worldsnas.starplayer.view.music_list
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -24,6 +23,13 @@ class MusicListViewModel @Inject constructor(
     private fun getLocalMusic() {
         viewModelScope.launch {
             val musicsList = musicRepository.getLocalData()
+            postMusicList.postValue(musicsList)
+        }
+    }
+
+    private fun getMusics() {
+        viewModelScope.launch {
+            val musicsList = musicRepository.getApiData(1, 10)
             postMusicList.postValue(musicsList)
         }
     }

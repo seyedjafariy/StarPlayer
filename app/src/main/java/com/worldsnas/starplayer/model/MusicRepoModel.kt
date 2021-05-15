@@ -1,5 +1,6 @@
 package com.worldsnas.starplayer.model
 
+
 data class MusicRepoModel(
     val id: Int,
     val title: String,

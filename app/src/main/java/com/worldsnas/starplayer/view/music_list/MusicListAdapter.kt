@@ -1,4 +1,4 @@
-package com.worldsnas.starplayer.view.musics_list
+package com.worldsnas.starplayer.view.music_list
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,7 +9,7 @@ import com.worldsnas.starplayer.databinding.ItemMusicBinding
 import com.worldsnas.starplayer.model.Music
 import com.worldsnas.starplayer.model.MusicRepoModel
 
-class MusicsListAdapter(private var onItemClick: (Music) -> Unit) :
+class MusicListAdapter(private var onItemClick: (Music) -> Unit) :
     ListAdapter<MusicRepoModel, MusicListItemViewHolder>(DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MusicListItemViewHolder {
@@ -47,7 +47,6 @@ class MusicListItemViewHolder(
                 obj.genre,
                 obj.address
             )
-
             onItemClick(localMusic)
         }
     }
