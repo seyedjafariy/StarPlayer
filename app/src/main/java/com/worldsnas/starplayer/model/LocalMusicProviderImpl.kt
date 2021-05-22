@@ -9,7 +9,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class LocalMusicProviderImpl @Inject
+open class LocalMusicProviderImpl @Inject
 constructor(private val contentResolver: ContentResolver) : LocalMusicProvider {
 
 
@@ -23,8 +23,8 @@ constructor(private val contentResolver: ContentResolver) : LocalMusicProvider {
     private val selection = MediaStore.Audio.Media.IS_MUSIC + " != 0"
 
 
-    override suspend fun getAllMusic(): List<MusicRepoModel> =
-        withContext(IO) {
+    override suspend fun getAllMusic(): List<MusicRepoModel>
+         {
 
             val cursor = contentResolver.query(uri, projection, selection, null, null, null)
             val musicRepoModels: ArrayList<MusicRepoModel> = ArrayList()
@@ -65,7 +65,7 @@ constructor(private val contentResolver: ContentResolver) : LocalMusicProvider {
                 } while (cursor.moveToNext())
 
             }
-            musicRepoModels
+           return musicRepoModels
         }
 }
 

@@ -7,6 +7,7 @@ object AndroidSdk {
 
 object Versions {
 
+    const val archCoreTesting = "2.1.0"
     const val mokitoKotlin2 = "2.2.0"
     const val buildToolsVersion = "3.6.1"
     const val truth = "1.1.2"
@@ -122,6 +123,7 @@ object Testing {
     const val supportTestRule = "androidx.test:rules:${Versions.supportTestVersion}"
     const val supportJunitExt = "androidx.test.ext:junit:${Versions.supportCoreVersion}"
     const val supportCore = "androidx.test:core:${Versions.supportTestVersion}"
+    const val archCoreTesting = "androidx.arch.core:core-testing:${Versions.archCoreTesting}"
 
     const val espressoCore = "androidx.test.espresso:espresso-core:${Versions.espressoVersion}"
     const val espressoIntents =

@@ -52,8 +52,11 @@ dependencies {
     testImplementation(Testing.robolectric)
     testImplementation(Testing.mockitoKotlin2)
     testImplementation(Testing.truth)
+    testImplementation(Testing.coroutinesTest)
+    testImplementation(Testing.archCoreTesting)
     androidTestImplementation(Testing.supportJunitExt)
     androidTestImplementation(Testing.espressoCore)
+
 
     implementation(Kotlin.kotlinStd7)
     implementation(Support.compat)

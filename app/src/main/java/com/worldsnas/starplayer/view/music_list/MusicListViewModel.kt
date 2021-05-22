@@ -9,27 +9,26 @@ import com.worldsnas.starplayer.model.MusicRepository
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
-class MusicListViewModel @Inject constructor(
+open class MusicListViewModel @Inject constructor(
     private val musicRepository: MusicRepository
 ) :
     ViewModel() {
     init {
-        getLocalMusic()
-//        getMusics()
+        getMusics()
     }
 
     private val postMusicList = MutableLiveData<List<MusicRepoModel>>()
 
-    private fun getLocalMusic() {
-        viewModelScope.launch {
+   private fun getMusics() {
+        viewModelScope.launch(Dispatchers.IO) {
             val musicsList = musicRepository.getLocalData()
             postMusicList.postValue(musicsList)
         }
     }
 
-    private fun getMusics() {
-        viewModelScope.launch {
-            val musicsList = musicRepository.getApiData(1, 10)
+    fun getMusics(page: Int, count: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val musicsList = musicRepository.getApiData(page, count)
             postMusicList.postValue(musicsList)
         }
     }
@@ -37,4 +36,7 @@ class MusicListViewModel @Inject constructor(
     fun postMusic(): LiveData<List<MusicRepoModel>> {
         return postMusicList
     }
+
+
 }
+
