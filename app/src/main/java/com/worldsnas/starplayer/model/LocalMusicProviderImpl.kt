@@ -40,6 +40,7 @@ constructor(private val contentResolver: ContentResolver) : LocalMusicProvider {
                     cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)
 
                 do {
+
                     val id = cursor.getInt(idColumn)
                     val title = cursor.getString(titleColumn)
                     val album = cursor.getString(albumColumn)

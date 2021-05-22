@@ -6,10 +6,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.worldsnas.starplayer.model.MusicRepoModel
 import com.worldsnas.starplayer.model.MusicRepository
+import com.worldsnas.starplayer.model.MusicRepositoryImpl
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
-open class MusicListViewModel @Inject constructor(
+class MusicListViewModel @Inject constructor(
     private val musicRepository: MusicRepository
 ) :
     ViewModel() {
