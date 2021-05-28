@@ -2,8 +2,6 @@ package com.worldsnas.starplayer.view.music_list
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.common.truth.Truth
-import com.nhaarman.mockitokotlin2.times
-import com.nhaarman.mockitokotlin2.verify
 import com.worldsnas.starplayer.model.FakeMusicRepository
 import com.worldsnas.starplayer.utils.CoroutinesTestRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
