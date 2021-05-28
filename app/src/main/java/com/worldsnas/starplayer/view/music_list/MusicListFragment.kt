@@ -36,14 +36,15 @@ class MusicListFragment : Fragment() {
 
     private lateinit var musicList: ArrayList<Music>
 
-    private val musicListAdapter = MusicListAdapter { item -> startExoplayerService(item,musicList) }
+    private val musicListAdapter =
+        MusicListAdapter { item -> startExoplayerService(item, musicList) }
 
     private var _binding: FragmentMusicListBinding? = null
     private val binding get() = _binding!!
     private lateinit var musicListComponent: MusicListComponent
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMusicListBinding.inflate(inflater, container, false)
         return binding.root
@@ -57,6 +58,7 @@ class MusicListFragment : Fragment() {
 
         binding.recyclerview.adapter = musicListAdapter
 
+        musicListViewModel.getMusics()
     }
 
     override fun onDestroyView() {
@@ -74,15 +76,15 @@ class MusicListFragment : Fragment() {
             Log.d("tag", musics.toString())
             musicListAdapter.submitList(musics)
         }
-        musicListViewModel.postMusic().observe(viewLifecycleOwner, musicObserver)
+        musicListViewModel.musicList.observe(viewLifecycleOwner, musicObserver)
     }
 
 
     private fun daggerSetup() {
 
         musicListComponent = DaggerMusicListComponent.builder()
-                .appComponent((activity!!.application as App).appComponent)
-                .build()
+            .appComponent((activity!!.application as App).appComponent)
+            .build()
         musicListComponent.inject(this)
     }
 
@@ -96,24 +98,24 @@ class MusicListFragment : Fragment() {
 
     private fun checkSelfPermission(): Boolean {
         val result = ContextCompat.checkSelfPermission(
-                context!!,
-                READ_EXTERNAL_STORAGE
+            context!!,
+            READ_EXTERNAL_STORAGE
         )
         return result == PackageManager.PERMISSION_GRANTED
     }
 
     private fun requestPermission() {
         ActivityCompat.requestPermissions(
-                activity!!,
-                arrayOf(READ_EXTERNAL_STORAGE),
-                ConstValues.READ_EXTERNAL_STORAGE_REQUEST_CODE
+            activity!!,
+            arrayOf(READ_EXTERNAL_STORAGE),
+            ConstValues.READ_EXTERNAL_STORAGE_REQUEST_CODE
         )
     }
 
     override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<out String>,
-            grantResults: IntArray
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
@@ -125,7 +127,7 @@ class MusicListFragment : Fragment() {
                 } else {
                     // disable function did not granted
                     Toast.makeText(context, "Need Permission to Access Songs", Toast.LENGTH_SHORT)
-                            .show()
+                        .show()
                 }
             }
             else -> return
