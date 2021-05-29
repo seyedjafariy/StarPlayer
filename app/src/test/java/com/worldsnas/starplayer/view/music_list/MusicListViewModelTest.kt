@@ -42,7 +42,7 @@ class MusicListViewModelTest {
 
             fakeMusicRepository.setFlagReturnEmptyList(false)
             musicListViewModel.getMusics()
-            Truth.assertThat(musicListViewModel.localMusicList.value).hasSize(10)
+            Truth.assertThat(musicListViewModel.localMusicList.value?.data).hasSize(10)
         }
 
 
@@ -53,7 +53,7 @@ class MusicListViewModelTest {
             fakeMusicRepository.setFlagReturnEmptyList(true)
 
             musicListViewModel.getMusics()
-            Truth.assertThat(musicListViewModel.localMusicList.value).isEmpty()
+            Truth.assertThat(musicListViewModel.localMusicList.value?.data).isEmpty()
         }
 
     @Test

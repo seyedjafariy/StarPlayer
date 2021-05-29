@@ -22,6 +22,7 @@ import com.worldsnas.starplayer.di.components.MusicListComponent
 import com.worldsnas.starplayer.model.Music
 import com.worldsnas.starplayer.model.MusicRepoModel
 import com.worldsnas.starplayer.utils.Resource
+import com.worldsnas.starplayer.utils.showToast
 import com.worldsnas.starplayer.view.ViewModelFactory
 import javax.inject.Inject
 
@@ -69,16 +70,38 @@ class MusicListFragment : Fragment() {
 
     private fun liveDataSetup() {
 
-        val musicObserver = Observer<List<MusicRepoModel>> { musics ->
-            musicList = musics.map {
-                Music(it.id, it.title, it.artist, it.album, it.genre, it.address)
-            } as ArrayList<Music>
-            val musics = musics
-            Log.d("tag", musics.toString())
-            musicListAdapter.submitList(musics)
+        val musicObserver = Observer<Resource<List<MusicRepoModel>>> { response ->
+
+            when (response.status) {
+                Resource.Status.LOADING -> {
+                    binding.progressMusicList.visibility = View.VISIBLE
+                    binding.recyclerview.visibility = View.GONE
+                }
+                Resource.Status.SUCCESS -> {
+                    binding.progressMusicList.visibility = View.GONE
+                    binding.recyclerview.visibility = View.VISIBLE
+                    musicListAdapter.submitList(response.data)
+                    initMusicsForExoPlayerService(response.data)
+                }
+                Resource.Status.ERROR -> {
+                    binding.recyclerview.visibility = View.GONE
+                    binding.progressMusicList.visibility = View.GONE
+                    showToast(response.message)
+
+                }
+
+            }
+
+
         }
         musicListViewModel.localMusicList.observe(viewLifecycleOwner, musicObserver)
 
+    }
+
+    private fun initMusicsForExoPlayerService(data: List<MusicRepoModel>?) {
+        musicList = data?.map {
+            Music(it.id, it.title, it.artist, it.album, it.genre, it.address)
+        } as ArrayList<Music>
     }
 
 
@@ -92,7 +115,7 @@ class MusicListFragment : Fragment() {
 
     private fun storagePermissionCheck() {
         if (checkSelfPermission()) {
-            Toast.makeText(context, "Already Granted", Toast.LENGTH_SHORT).show()
+            showToast("Already Granted")
             liveDataSetup()
         } else
             requestPermission()
@@ -128,8 +151,8 @@ class MusicListFragment : Fragment() {
 
                 } else {
                     // disable function did not granted
-                    Toast.makeText(context, "Need Permission to Access Songs", Toast.LENGTH_SHORT)
-                        .show()
+                    showToast("Need Permission to Access Songs")
+
                 }
             }
             else -> return

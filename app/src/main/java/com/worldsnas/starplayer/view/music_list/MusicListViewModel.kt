@@ -22,13 +22,14 @@ class MusicListViewModel @Inject constructor(
     val musicList: LiveData<Resource<List<MusicRepoModel>>>
         get() = _musicList
 
-    private val _localMusicList = MutableLiveData<List<MusicRepoModel>>()
-    val localMusicList: LiveData<List<MusicRepoModel>>
+    private val _localMusicList = MutableLiveData<Resource<List<MusicRepoModel>>>()
+    val localMusicList: LiveData<Resource<List<MusicRepoModel>>>
         get() = _localMusicList
 
 
     fun getMusics() {
         viewModelScope.launch(dispatcher) {
+            _localMusicList.postValue(Resource.loading(null))
             _localMusicList.postValue(musicRepository.getLocalData())
         }
     }
@@ -36,6 +37,7 @@ class MusicListViewModel @Inject constructor(
 
     fun getMusics(page: Int, count: Int) {
         viewModelScope.launch(dispatcher) {
+            _musicList.postValue(Resource.loading(null))
             _musicList.postValue(musicRepository.getApiData(page, count))
         }
     }
