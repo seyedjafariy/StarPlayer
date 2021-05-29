@@ -6,7 +6,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class MusicResponse(
     @Json(name = "id") val id: Long,
-    @Json(name = "page") val page: Long,
+    @Json(name = "page") val page: Long?,
     @Json(name = "musicLink") val musicLink: String,
     @Json(name = "artist") val artist: String,
     @Json(name = "cover") val cover: String,

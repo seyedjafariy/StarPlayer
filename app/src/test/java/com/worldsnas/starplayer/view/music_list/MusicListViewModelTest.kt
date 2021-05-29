@@ -3,7 +3,9 @@ package com.worldsnas.starplayer.view.music_list
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.common.truth.Truth
 import com.worldsnas.starplayer.model.FakeMusicRepository
+import com.worldsnas.starplayer.model.MusicRepoModel
 import com.worldsnas.starplayer.utils.CoroutinesTestRule
+import com.worldsnas.starplayer.utils.Resource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
@@ -28,8 +30,9 @@ class MusicListViewModelTest {
 
     @Before
     fun setup() {
-        fakeMusicRepository = FakeMusicRepository(testCoroutineRule.testDispatcher)
-        musicListViewModel = MusicListViewModel(fakeMusicRepository)
+        fakeMusicRepository = FakeMusicRepository()
+        musicListViewModel =
+            MusicListViewModel(fakeMusicRepository, testCoroutineRule.testDispatcher)
     }
 
 
@@ -39,7 +42,7 @@ class MusicListViewModelTest {
 
             fakeMusicRepository.setFlagReturnEmptyList(false)
             musicListViewModel.getMusics()
-            Truth.assertThat(musicListViewModel.musicList.value).hasSize(10)
+            Truth.assertThat(musicListViewModel.localMusicList.value).hasSize(10)
         }
 
 
@@ -50,7 +53,7 @@ class MusicListViewModelTest {
             fakeMusicRepository.setFlagReturnEmptyList(true)
 
             musicListViewModel.getMusics()
-            Truth.assertThat(musicListViewModel.musicList.value).isEmpty()
+            Truth.assertThat(musicListViewModel.localMusicList.value).isEmpty()
         }
 
     @Test
@@ -59,7 +62,7 @@ class MusicListViewModelTest {
             fakeMusicRepository.setFlagReturnEmptyList(false)
 
             musicListViewModel.getMusics(1, 8)
-            Truth.assertThat(musicListViewModel.musicList.value).hasSize(8)
+            Truth.assertThat(musicListViewModel.musicList.value).isNotNull()
         }
 
     @Test
@@ -68,7 +71,8 @@ class MusicListViewModelTest {
             fakeMusicRepository.setFlagReturnEmptyList(true)
 
             musicListViewModel.getMusics(1, 10)
-            Truth.assertThat(musicListViewModel.musicList.value).isEmpty()
+            Truth.assertThat(musicListViewModel.musicList.value).isEqualTo(Resource.success(
+                emptyList<MusicRepoModel>()))
 
         }
 }

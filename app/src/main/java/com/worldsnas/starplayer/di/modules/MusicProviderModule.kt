@@ -28,6 +28,6 @@ object MusicProviderModule {
         localMusicProvider: LocalMusicProvider,
         @IoDispatcher dispatcher: CoroutineDispatcher
     ): MusicRepository {
-        return MusicRepositoryImpl(localMusicProvider, webServiceApi, dispatcher)
+        return MusicRepositoryImpl(localMusicProvider, webServiceApi)
     }
 }

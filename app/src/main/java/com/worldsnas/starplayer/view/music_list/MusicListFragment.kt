@@ -21,6 +21,7 @@ import com.worldsnas.starplayer.di.components.DaggerMusicListComponent
 import com.worldsnas.starplayer.di.components.MusicListComponent
 import com.worldsnas.starplayer.model.Music
 import com.worldsnas.starplayer.model.MusicRepoModel
+import com.worldsnas.starplayer.utils.Resource
 import com.worldsnas.starplayer.view.ViewModelFactory
 import javax.inject.Inject
 
@@ -76,7 +77,8 @@ class MusicListFragment : Fragment() {
             Log.d("tag", musics.toString())
             musicListAdapter.submitList(musics)
         }
-        musicListViewModel.musicList.observe(viewLifecycleOwner, musicObserver)
+        musicListViewModel.localMusicList.observe(viewLifecycleOwner, musicObserver)
+
     }
 
 

@@ -1,12 +1,13 @@
 package com.worldsnas.starplayer.model
 
+import com.worldsnas.starplayer.utils.Resource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
 /**
  * this fake repository is gonna used to simulate repository's treats
  */
-class FakeMusicRepository(private val dispatcher: CoroutineDispatcher) : MusicRepository {
+class FakeMusicRepository : MusicRepository {
 
     private var emptyFlag: Boolean = false
 
@@ -22,11 +23,11 @@ class FakeMusicRepository(private val dispatcher: CoroutineDispatcher) : MusicRe
     /**
      * get musics from api
      */
-    override suspend fun getApiData(page: Int, count: Int): List<MusicRepoModel> {
-        return withContext(dispatcher) {
-            if (emptyFlag) emptyList()
-            else createFakeMusics(count)
-        }
+    override suspend fun getApiData(page: Int, count: Int): Resource<List<MusicRepoModel>> {
+//        return withContext(dispatcher) {
+        return if (emptyFlag) Resource.success(emptyList())
+        else Resource.success(createFakeMusics(count))
+//        }
 
     }
 
@@ -34,10 +35,10 @@ class FakeMusicRepository(private val dispatcher: CoroutineDispatcher) : MusicRe
      * get local musics from your device
      */
     override suspend fun getLocalData(): List<MusicRepoModel> {
-        return withContext(dispatcher) {
-            if (emptyFlag) emptyList()
-            else createFakeMusics()
-        }
+//        return withContext(dispatcher) {
+        return if (emptyFlag) emptyList()
+        else createFakeMusics()
+//        }
     }
 
 
