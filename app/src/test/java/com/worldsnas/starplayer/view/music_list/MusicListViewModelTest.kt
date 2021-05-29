@@ -41,8 +41,11 @@ class MusicListViewModelTest {
         testCoroutineRule.testDispatcher.runBlockingTest {
 
             fakeMusicRepository.setFlagReturnEmptyList(false)
+            fakeMusicRepository.setFlagReturnError(false)
+
             musicListViewModel.getMusics()
-            Truth.assertThat(musicListViewModel.localMusicList.value?.data).hasSize(10)
+            Truth.assertThat(musicListViewModel.localMusicList.value)
+                .isEqualTo(fakeMusicRepository.getLocalData())
         }
 
 
@@ -51,28 +54,68 @@ class MusicListViewModelTest {
         testCoroutineRule.testDispatcher.runBlockingTest {
 
             fakeMusicRepository.setFlagReturnEmptyList(true)
+            fakeMusicRepository.setFlagReturnError(false)
 
             musicListViewModel.getMusics()
-            Truth.assertThat(musicListViewModel.localMusicList.value?.data).isEmpty()
+            Truth.assertThat(musicListViewModel.localMusicList.value).isEqualTo(
+                Resource.success<List<MusicRepoModel>>(
+                    emptyList()
+                )
+            )
+        }
+
+    @Test
+    fun `get local musics return error`() =
+        testCoroutineRule.testDispatcher.runBlockingTest {
+
+            fakeMusicRepository.setFlagReturnEmptyList(false)
+            fakeMusicRepository.setFlagReturnError(true)
+
+            musicListViewModel.getMusics()
+            Truth.assertThat(musicListViewModel.localMusicList.value).isEqualTo(
+                Resource.error("unknown error", null)
+            )
         }
 
     @Test
     fun `get api musics return not empty list`() =
         testCoroutineRule.testDispatcher.runBlockingTest {
-            fakeMusicRepository.setFlagReturnEmptyList(false)
 
-            musicListViewModel.getMusics(1, 8)
-            Truth.assertThat(musicListViewModel.musicList.value).isNotNull()
+            fakeMusicRepository.setFlagReturnEmptyList(false)
+            fakeMusicRepository.setFlagReturnError(false)
+
+            musicListViewModel.getMusics(1, 10)
+            Truth.assertThat(musicListViewModel.musicList.value)
+                .isEqualTo(fakeMusicRepository.getApiData(1, 10))
         }
 
     @Test
     fun `get api musics return empty list`() =
         testCoroutineRule.testDispatcher.runBlockingTest {
             fakeMusicRepository.setFlagReturnEmptyList(true)
+            fakeMusicRepository.setFlagReturnError(false)
 
             musicListViewModel.getMusics(1, 10)
-            Truth.assertThat(musicListViewModel.musicList.value).isEqualTo(Resource.success(
-                emptyList<MusicRepoModel>()))
+            Truth.assertThat(musicListViewModel.musicList.value).isEqualTo(
+                Resource.success(
+                    emptyList<MusicRepoModel>()
+                )
+            )
 
         }
+
+
+    @Test
+    fun `get api musics return error`() =
+        testCoroutineRule.testDispatcher.runBlockingTest {
+            fakeMusicRepository.setFlagReturnEmptyList(false)
+            fakeMusicRepository.setFlagReturnError(true)
+
+            musicListViewModel.getMusics(1, 10)
+            Truth.assertThat(musicListViewModel.musicList.value).isEqualTo(
+                Resource.error("unknown error", null)
+            )
+
+        }
+
 }

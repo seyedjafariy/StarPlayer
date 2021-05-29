@@ -17,11 +17,11 @@ class MusicRepositoryImpl @Inject constructor(
             if (result.isSuccessful) {
                 result.body()?.let {
                     Resource.success(NetworkMusicMapper.mapToLocalList(it))
-                } ?: Resource.error("response body is null", null)
-            } else Resource.error(result.message(), null)
+                } ?: Resource.error("unknown error", null)
+            } else Resource.error("unknown error", null)
 
         } catch (e: Exception) {
-            Resource.error(e.message, null)
+            Resource.error("unknown error", null)
         }
 
     }
@@ -31,7 +31,7 @@ class MusicRepositoryImpl @Inject constructor(
         return try {
             Resource.success(localMusicProvider.getAllMusic())
         } catch (e: Exception) {
-            Resource.error("unKnown Error", null)
+            Resource.error("unknown error", null)
         }
 
 

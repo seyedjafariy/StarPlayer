@@ -7,14 +7,23 @@ import com.worldsnas.starplayer.utils.Resource
  */
 class FakeMusicRepository : MusicRepository {
 
-    private var emptyFlag: Boolean = false
+    private var isEmptyList = false
+    private var isError = false
 
     /**
      * by this method you can set empty list as a return for other methods
-     * @param emptyFlag is used to determine if methods returns empty or not
+     * @param isEmptyList is used to determine if methods returns empty or not
      */
-    fun setFlagReturnEmptyList(emptyFlag: Boolean) {
-        this.emptyFlag = emptyFlag
+    fun setFlagReturnEmptyList(isEmptyList: Boolean) {
+        this.isEmptyList = isEmptyList
+    }
+
+    /**
+     * by this method you can set an error as a return for other methods
+     * @param isError is used to determine if methods returns error or not
+     */
+    fun setFlagReturnError(isError: Boolean) {
+        this.isError = isError
     }
 
 
@@ -22,16 +31,22 @@ class FakeMusicRepository : MusicRepository {
      * get musics from api
      */
     override suspend fun getApiData(page: Int, count: Int): Resource<List<MusicRepoModel>> {
-        return if (emptyFlag) Resource.success(emptyList())
-        else Resource.success(createFakeMusics(count))
+        return when {
+            isEmptyList && !isError-> Resource.success(emptyList())
+            isError && !isEmptyList-> Resource.error("unknown error", null)
+            else -> Resource.success(createFakeMusics(count))
+        }
     }
 
     /**
      * get local musics from your device
      */
     override suspend fun getLocalData(): Resource<List<MusicRepoModel>> {
-        return if (emptyFlag) Resource.success(emptyList())
-        else Resource.success(createFakeMusics())
+        return when {
+            isEmptyList && !isError -> Resource.success(emptyList())
+            isError && !isEmptyList-> Resource.error("unknown error", null)
+            else -> Resource.success(createFakeMusics())
+        }
     }
 
 
