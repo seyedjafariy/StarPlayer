@@ -21,4 +21,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MusicListViewModel::class)
     abstract fun bindMusicListViewModel(viewModel : MusicListViewModel) : ViewModel
+
+
 }

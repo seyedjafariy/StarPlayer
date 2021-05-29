@@ -21,6 +21,8 @@ import com.worldsnas.starplayer.di.components.DaggerMusicListComponent
 import com.worldsnas.starplayer.di.components.MusicListComponent
 import com.worldsnas.starplayer.model.Music
 import com.worldsnas.starplayer.model.MusicRepoModel
+import com.worldsnas.starplayer.utils.Resource
+import com.worldsnas.starplayer.utils.showToast
 import com.worldsnas.starplayer.view.ViewModelFactory
 import javax.inject.Inject
 
@@ -36,14 +38,15 @@ class MusicListFragment : Fragment() {
 
     private lateinit var musicList: ArrayList<Music>
 
-    private val musicListAdapter = MusicListAdapter { item -> startExoplayerService(item,musicList) }
+    private val musicListAdapter =
+        MusicListAdapter { item -> startExoplayerService(item, musicList) }
 
     private var _binding: FragmentMusicListBinding? = null
     private val binding get() = _binding!!
     private lateinit var musicListComponent: MusicListComponent
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMusicListBinding.inflate(inflater, container, false)
         return binding.root
@@ -57,6 +60,7 @@ class MusicListFragment : Fragment() {
 
         binding.recyclerview.adapter = musicListAdapter
 
+        musicListViewModel.getMusics()
     }
 
     override fun onDestroyView() {
@@ -66,29 +70,52 @@ class MusicListFragment : Fragment() {
 
     private fun liveDataSetup() {
 
-        val musicObserver = Observer<List<MusicRepoModel>> { musics ->
-            musicList = musics.map {
-                Music(it.id, it.title, it.artist, it.album, it.genre, it.address)
-            } as ArrayList<Music>
-            val musics = musics
-            Log.d("tag", musics.toString())
-            musicListAdapter.submitList(musics)
+        val musicObserver = Observer<Resource<List<MusicRepoModel>>> { response ->
+
+            when (response.status) {
+                Resource.Status.LOADING -> {
+                    binding.progressMusicList.visibility = View.VISIBLE
+                    binding.recyclerview.visibility = View.GONE
+                }
+                Resource.Status.SUCCESS -> {
+                    binding.progressMusicList.visibility = View.GONE
+                    binding.recyclerview.visibility = View.VISIBLE
+                    musicListAdapter.submitList(response.data)
+                    initMusicsForExoPlayerService(response.data)
+                }
+                Resource.Status.ERROR -> {
+                    binding.recyclerview.visibility = View.GONE
+                    binding.progressMusicList.visibility = View.GONE
+                    showToast(response.message)
+
+                }
+
+            }
+
+
         }
-        musicListViewModel.postMusic().observe(viewLifecycleOwner, musicObserver)
+        musicListViewModel.localMusicList.observe(viewLifecycleOwner, musicObserver)
+
+    }
+
+    private fun initMusicsForExoPlayerService(data: List<MusicRepoModel>?) {
+        musicList = data?.map {
+            Music(it.id, it.title, it.artist, it.album, it.genre, it.address)
+        } as ArrayList<Music>
     }
 
 
     private fun daggerSetup() {
 
         musicListComponent = DaggerMusicListComponent.builder()
-                .appComponent((activity!!.application as App).appComponent)
-                .build()
+            .appComponent((activity!!.application as App).appComponent)
+            .build()
         musicListComponent.inject(this)
     }
 
     private fun storagePermissionCheck() {
         if (checkSelfPermission()) {
-            Toast.makeText(context, "Already Granted", Toast.LENGTH_SHORT).show()
+            showToast("Already Granted")
             liveDataSetup()
         } else
             requestPermission()
@@ -96,24 +123,24 @@ class MusicListFragment : Fragment() {
 
     private fun checkSelfPermission(): Boolean {
         val result = ContextCompat.checkSelfPermission(
-                context!!,
-                READ_EXTERNAL_STORAGE
+            context!!,
+            READ_EXTERNAL_STORAGE
         )
         return result == PackageManager.PERMISSION_GRANTED
     }
 
     private fun requestPermission() {
         ActivityCompat.requestPermissions(
-                activity!!,
-                arrayOf(READ_EXTERNAL_STORAGE),
-                ConstValues.READ_EXTERNAL_STORAGE_REQUEST_CODE
+            activity!!,
+            arrayOf(READ_EXTERNAL_STORAGE),
+            ConstValues.READ_EXTERNAL_STORAGE_REQUEST_CODE
         )
     }
 
     override fun onRequestPermissionsResult(
-            requestCode: Int,
-            permissions: Array<out String>,
-            grantResults: IntArray
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
@@ -124,8 +151,8 @@ class MusicListFragment : Fragment() {
 
                 } else {
                     // disable function did not granted
-                    Toast.makeText(context, "Need Permission to Access Songs", Toast.LENGTH_SHORT)
-                            .show()
+                    showToast("Need Permission to Access Songs")
+
                 }
             }
             else -> return

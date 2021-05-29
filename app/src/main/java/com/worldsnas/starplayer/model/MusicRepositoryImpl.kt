@@ -1,38 +1,41 @@
 package com.worldsnas.starplayer.model
 
 import com.worldsnas.starplayer.api.WebServiceApi
-import com.worldsnas.starplayer.mockGetMusicsApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.worldsnas.starplayer.utils.NetworkMusicMapper
+import com.worldsnas.starplayer.utils.Resource
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class MusicRepositoryImpl @Inject constructor(
-        private val localMusicProvider: LocalMusicProvider,
-        private val webServiceApi: WebServiceApi
+    private val localMusicProvider: LocalMusicProvider,
+    private val webServiceApi: WebServiceApi
 ) : MusicRepository {
 
-    override suspend fun getApiData(page: Int, count: Int): List<MusicRepoModel> =
-            withContext(Dispatchers.IO) {
+    override suspend fun getApiData(page: Int, count: Int): Resource<List<MusicRepoModel>> {
+        return try {
+            val result = webServiceApi.getMusics(page, count)
+            if (result.isSuccessful) {
+                result.body()?.let {
+                    Resource.success(NetworkMusicMapper.mapToLocalList(it))
+                } ?: Resource.error("unknown error", null)
+            } else Resource.error("unknown error", null)
 
-                val apiMusicList = mockGetMusicsApi()
-//            val apiMusicList = webServiceApi.getMusics(page, count)
+        } catch (e: Exception) {
+            Resource.error("unknown error", null)
+        }
 
-                apiMusicList.map {
-
-                    MusicRepoModel(
-                            it.id.toInt(),
-                            it.name,
-                            it.artist,
-                            "album",
-                            "genre",
-                            it.musicLink
-                    )
-                }!!
-            }
+    }
 
 
-    override suspend fun getLocalData(): List<MusicRepoModel> =
-            withContext(Dispatchers.IO) {
-                localMusicProvider.getAllMusic()
-            }
+    override suspend fun getLocalData(): Resource<List<MusicRepoModel>> {
+        return try {
+            Resource.success(localMusicProvider.getAllMusic())
+        } catch (e: Exception) {
+            Resource.error("unknown error", null)
+        }
+
+
+    }
+
+
 }

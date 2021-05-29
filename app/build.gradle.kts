@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.utils.addToStdlib.safeAs
-
 plugins {
     id(BuildPlugins.androidApplication)
     id(BuildPlugins.kotlinAndroid)
@@ -43,13 +41,22 @@ android {
     viewBinding {
         isEnabled = true
     }
+
 }
 
 dependencies {
     implementation(Support.supportLegacy)
     testImplementation(Testing.junit)
+    testImplementation(Testing.supportTestRule)
+    testImplementation(Testing.supportTestRunner)
+    testImplementation(Testing.robolectric)
+    testImplementation(Testing.mockitoKotlin2)
+    testImplementation(Testing.truth)
+    testImplementation(Testing.coroutinesTest)
+    testImplementation(Testing.archCoreTesting)
     androidTestImplementation(Testing.supportJunitExt)
     androidTestImplementation(Testing.espressoCore)
+
 
     implementation(Kotlin.kotlinStd7)
     implementation(Support.compat)

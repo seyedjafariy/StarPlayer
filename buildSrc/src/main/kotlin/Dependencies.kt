@@ -7,8 +7,10 @@ object AndroidSdk {
 
 object Versions {
 
+    const val archCoreTesting = "2.1.0"
+    const val mokitoKotlin2 = "2.2.0"
     const val buildToolsVersion = "3.6.1"
-
+    const val truth = "1.1.2"
     const val jUnitVersion = "4.13-beta-3"
     const val assertJVersion = "3.12.2"
     const val supportTestVersion = "1.1.0"
@@ -121,6 +123,7 @@ object Testing {
     const val supportTestRule = "androidx.test:rules:${Versions.supportTestVersion}"
     const val supportJunitExt = "androidx.test.ext:junit:${Versions.supportCoreVersion}"
     const val supportCore = "androidx.test:core:${Versions.supportTestVersion}"
+    const val archCoreTesting = "androidx.arch.core:core-testing:${Versions.archCoreTesting}"
 
     const val espressoCore = "androidx.test.espresso:espresso-core:${Versions.espressoVersion}"
     const val espressoIntents =
@@ -133,6 +136,14 @@ object Testing {
     const val fakeIt = "com.github.moove-it:fakeit:${Versions.fakeItVersion}"
 
     const val robolectric = "org.robolectric:robolectric:4.2"
+
+    const val mockitoKotlin2 =
+        "com.nhaarman.mockitokotlin2:mockito-kotlin:${Versions.mokitoKotlin2}"
+
+    const val truth = "com.google.truth:truth:${Versions.truth}"
+    const val truthExtensions =
+        "com.google.truth.extensions:truth-java8-extension:${Versions.truth}"
+
 }
 
 object Kotlin {

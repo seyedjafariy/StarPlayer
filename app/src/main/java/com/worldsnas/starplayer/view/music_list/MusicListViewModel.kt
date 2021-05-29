@@ -4,37 +4,44 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.worldsnas.starplayer.di.qualifier.IoDispatcher
 import com.worldsnas.starplayer.model.MusicRepoModel
 import com.worldsnas.starplayer.model.MusicRepository
-import com.worldsnas.starplayer.model.MusicRepositoryImpl
+import com.worldsnas.starplayer.utils.Resource
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class MusicListViewModel @Inject constructor(
-    private val musicRepository: MusicRepository
-) :
-    ViewModel() {
-    init {
-        getLocalMusic()
-    }
+    private val musicRepository: MusicRepository,
+    @IoDispatcher private val dispatcher: CoroutineDispatcher
 
-    private val postMusicList = MutableLiveData<List<MusicRepoModel>>()
+) : ViewModel() {
 
-    private fun getLocalMusic() {
-        viewModelScope.launch {
-            val musicsList = musicRepository.getLocalData()
-            postMusicList.postValue(musicsList)
+
+    private val _musicList = MutableLiveData<Resource<List<MusicRepoModel>>>()
+    val musicList: LiveData<Resource<List<MusicRepoModel>>>
+        get() = _musicList
+
+    private val _localMusicList = MutableLiveData<Resource<List<MusicRepoModel>>>()
+    val localMusicList: LiveData<Resource<List<MusicRepoModel>>>
+        get() = _localMusicList
+
+
+    fun getMusics() {
+        viewModelScope.launch(dispatcher) {
+            _localMusicList.postValue(Resource.loading(null))
+            _localMusicList.postValue(musicRepository.getLocalData())
         }
     }
 
-    private fun getMusics() {
-        viewModelScope.launch {
-            val musicsList = musicRepository.getApiData(1, 10)
-            postMusicList.postValue(musicsList)
+
+    fun getMusics(page: Int, count: Int) {
+        viewModelScope.launch(dispatcher) {
+            _musicList.postValue(Resource.loading(null))
+            _musicList.postValue(musicRepository.getApiData(page, count))
         }
     }
 
-    fun postMusic(): LiveData<List<MusicRepoModel>> {
-        return postMusicList
-    }
+
 }
+
